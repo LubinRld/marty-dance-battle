@@ -6,7 +6,6 @@ class RobotController:
         self.robot = None
         self.is_connected=False
 
-
     def connect(self, ip_address):
         try:
             self.robot=Marty("wifi", ip_address)
@@ -22,3 +21,21 @@ class RobotController:
             self.robot.close()
             self.is_connected=False
             print("The robot is disconnected")
+
+    def move_arm(self, side, angle):
+        if side == "left":
+            self.robot.arms(angle, 0, 500)
+        elif side == "right":
+            self.robot.arms(0, angle, 500)
+        
+    def step(self, direction, step_number):
+        if direction == "forward":
+            self.robot.walk(step_number)
+        elif direction == "backward":
+            self.robot.walk(step_number, step_length=-25)
+        elif direction == "left" or direction == "right":
+            self.robot.sidestep(direction,step_number)
+        else:
+            print("the only direction known is forward, backward, left or righ")
+
+    
