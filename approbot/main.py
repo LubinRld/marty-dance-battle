@@ -10,11 +10,15 @@ def main():
 
     my_robot.connect(ip_adress_1)
     my_second_robot.connect(ip_address_2)
+    
 
-    my_robot.move_arm("left", 100)
-    my_robot.move_arm("right", -100)
-    my_robot.step("forward", 2)
-    my_robot.step("left", 1)
+    my_robot._move_arm("left", 100)
+    my_robot._move_arm("right", -100)
+    my_robot._step("forward", 2)
+    my_robot._step("left", 1)
+    my_robot._eye_expression("angry")
+
+    my_robot.disconnect()
 
 if __name__ == "__main__":
     main()
