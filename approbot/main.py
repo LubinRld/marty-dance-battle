@@ -18,6 +18,14 @@ def main():
     my_robot._step("left", 1)
     my_robot._eye_expression("angry")
 
+    my_robot.execute_action("U",2)
+    my_robot.execute_action("L",2)
+    my_robot.execute_action("ARU")
+    my_robot.execute_action("ALB")
+    my_robot.execute_action("XNG")
+
+
+
     my_robot.disconnect()
 
 if __name__ == "__main__":
