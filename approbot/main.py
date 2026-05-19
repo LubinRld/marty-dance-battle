@@ -18,6 +18,9 @@ def main():
     my_robot.execute_action("XNT")
 
 
+    print(my_robot.get_battery_level())
+    print(my_robot.get_foot_sensor_color())
+
     my_robot.disconnect()
 
 if __name__ == "__main__":

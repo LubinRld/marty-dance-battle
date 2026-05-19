@@ -16,6 +16,27 @@ class RobotController:
             print(f"Connection failed : {e}")
             self.is_connected=False
     
+    def get_battery_level(self):
+        if self.is_connected==False or self.robot is None:
+             print("Cannot get battery level : the robot is not connected")
+             return False
+        try:
+            battery_level = self.robot.get_battery_remaining()
+            return battery_level
+        except Exception as e:
+            print(f"Error reading battery : {e}")
+            return False
+
+    def get_foot_sensor_color(self, side):
+        if self.is_connected==False or self.robot is None:
+             print("Cannot get foot_color : the robot is not connected")
+             return False
+        try:
+            sensor_color = self.robot.get_color_sensor_color("left")
+            return sensor_color
+        except Exception as e:
+            print(f"Error scanning color : {e}")
+
     def execute_action(self, actionCode, nbrAction=None):
         if self.is_connected==False or self.robot is None:
             print(f"The robot is not connected, you can't do the movement code : {actionCode}")
