@@ -1,7 +1,13 @@
 import robot_controller
+import robot_client
 import time
 def main():
 
+    
+    my_robot_client = robot_client.RobotClient()
+    my_robot_client.connect()
+
+    """"
     ip_adress_1 = "192.168.0.105"
 
     my_robot = robot_controller.RobotController()
@@ -25,6 +31,6 @@ def main():
 
     print(my_robot.get_battery_level())
     my_robot.disconnect()
-    
+    """
 if __name__ == "__main__":
     main()
