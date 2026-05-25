@@ -6,6 +6,20 @@ class RobotClient:
         self.url = f"http://{host}:{port}"
         self.rid = None
     
+    def is_server_live(self):
+        url_server_live = f"{self.url}/"
+        try:
+            response = requests.get(url_server_live)
+            if(response.json() == "1.2"):
+                return True
+            else:
+                return False
+        except Exception as e:
+            print(f"An error occured: {e}")
+            return False
+
+
+
     def connect(self):
         url_hello = f"{self.url}/hello"
         try:
