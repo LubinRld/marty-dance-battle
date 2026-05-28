@@ -1,6 +1,8 @@
 import time
 import requests
 
+ping = "10.113.26.100"
+
 class RobotClient:
     def __init__(self, host="localhost", port=8000):
         self.url = f"http://{host}:{port}"
@@ -46,3 +48,27 @@ class RobotClient:
                 print("A problem occured during disconnection")
         except Exception as e:
             print (f"Can't connect to the server : {e}")    
+
+    def start(self):
+        url_start = f"{self.url}/start"
+        payload = {"rid":self.rid}
+        try:
+            response = requests.post(url_start, json=payload)
+            if response.status_code == 200:
+                return True
+            else:
+                return False
+        except Exception as e:
+            print (f"can't connect to the server : {e}")
+
+    def get_score(self):
+        url_score = f"{self.url}/score"
+        payload = {"rid":self.rid}
+        try:
+            response = requests.get(url_score, json=payload)
+            if response.status_code == 200 and response.json is not None:
+                return response.json()
+            else:
+                print(f"didn't work : {response.json()}")
+        except Exception as e:
+            print (f"Can't connect to the server : {e}")

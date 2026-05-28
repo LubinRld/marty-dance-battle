@@ -6,9 +6,16 @@ def main():
     
     my_robot_client = robot_client.RobotClient()
     my_robot_client.connect()
-    
+
     if my_robot_client.is_server_live():
-        my_robot_client.disconnect()
+        print("is connected")
+    if my_robot_client.start():
+        print("can start")
+        
+    print(my_robot_client.get_score())
+    
+    my_robot_client.disconnect()
+
 
     """"
     ip_adress_1 = "192.168.0.105"
