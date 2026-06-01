@@ -11,7 +11,9 @@ def main():
         print("is connected")
     if my_robot_client.start():
         print("can start")
-        
+    
+    print(my_robot_client.step("B","ALU","XNT"))
+    print(my_robot_client.step("R","ALU+ARB","XNG"))
     print(my_robot_client.get_score())
     
     my_robot_client.disconnect()
