@@ -5,8 +5,6 @@ import random
 from urllib.parse import urlparse, parse_qs
 from battle import Battle
 
-HOST = "0.0.0.0"
-PORT = 8000
 
 SERVER_VERSION = "1.2"
 MAX_MOVES = 10
@@ -16,18 +14,6 @@ battle.load_file("appserver/example.battle")
 
 robots = {}
 scores = {}
-"""
-def compute_points(col, arm, exp):
-
-    points = 0
-
-    if col == "R" and exp == "XNG":
-        points += 3
-    if "ALU" in arm:
-        points += 1
-
-    return points
-"""
 
 class RequestHandler(BaseHTTPRequestHandler):
 
@@ -81,7 +67,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.send_json({"error": "robot inconnu"},404)
                 return
 
-            moves = random.randint(5, MAX_MOVES)
+            moves = battle.max_moves
             print(f"[START] {rid} -> {moves}")
             self.send_json(moves)
 
@@ -120,13 +106,3 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             self.send_json({"error": "route inconnue"},404)
 
-def run():
-
-    server = HTTPServer((HOST, PORT),RequestHandler)
-    print(f"Server running on {HOST}:{PORT}")
-    battle.print_rules()
-    server.serve_forever()
-
-
-if __name__ == "__main__":
-    run()
