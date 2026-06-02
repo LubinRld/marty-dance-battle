@@ -67,7 +67,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.send_json({"error": "robot inconnu"},404)
                 return
 
-            moves = random.randint(5, MAX_MOVES)
+            moves = battle.max_moves
             print(f"[START] {rid} -> {moves}")
             self.send_json(moves)
 
