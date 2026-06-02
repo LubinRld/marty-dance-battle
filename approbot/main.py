@@ -1,9 +1,14 @@
 import robot_controller
 import robot_client
+import read_dance
 import time
 def main():
 
-    
+    my_dancefile = read_dance.ReadDance("approbot/example.dance")
+    my_dancefile.getMovement()
+    my_dancefile.getAct()
+
+    """
     my_robot_client = robot_client.RobotClient()
     my_robot_client.connect()
 
@@ -19,7 +24,7 @@ def main():
     my_robot_client.disconnect()
 
 
-    """"
+    
     ip_adress_1 = "192.168.0.105"
 
     my_robot = robot_controller.RobotController()
