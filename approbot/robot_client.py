@@ -55,6 +55,7 @@ class RobotClient:
         try:
             request = requests.post(url_start, json=payload)
             if request.status_code == 200:
+                print(request.json()) #Nombre de pas
                 return True
             else:
                 return False
