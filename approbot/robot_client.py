@@ -55,10 +55,9 @@ class RobotClient:
         try:
             request = requests.post(url_start, json=payload)
             if request.status_code == 200:
-                print(request.json()) #Nombre de pas
-                return True
+                return request.json()
             else:
-                return False
+                return None
         except Exception as e:
             print (f"can't connect to the server : {e}")
 
@@ -67,7 +66,7 @@ class RobotClient:
         payload = {"rid":self.rid}
         try:
             response = requests.get(url_score, params=payload)
-            if response.status_code == 200 and response.json is not None:
+            if response.status_code == 200 and response.json() is not None:
                 return response.json()
             else:
                 print(f"didn't work : {response.json()}")
