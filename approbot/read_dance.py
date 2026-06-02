@@ -11,9 +11,9 @@ class ReadDance:
                 elif line.startswith("ACT"):
                     break
                 else:
-                    direction = int(line.split()[0][0])
-                    movement = line.split()[0][1]
-                    movements.append((direction,movement))
+                    movement_number = int(line.split()[0][0])
+                    direction = line.split()[0][1]
+                    movements.append((movement_number,direction))
         return movements
 
     def getAct(self):
