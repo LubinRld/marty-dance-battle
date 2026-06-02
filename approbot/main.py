@@ -6,6 +6,7 @@ def main():
 
     my_dancefile = read_dance.ReadDance("approbot/example.dance")
     my_dancefile.getMovement()
+    my_dancefile.getAct()
 
     """
     my_robot_client = robot_client.RobotClient()
