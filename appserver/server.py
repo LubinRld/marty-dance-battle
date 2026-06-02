@@ -3,6 +3,7 @@ import json
 import uuid
 import random
 from urllib.parse import urlparse, parse_qs
+from battle import Battle
 
 HOST = "0.0.0.0"
 PORT = 8000
@@ -10,9 +11,12 @@ PORT = 8000
 SERVER_VERSION = "1.2"
 MAX_MOVES = 10
 
+battle = Battle()
+battle.load_file("appserver/example.battle")
+
 robots = {}
 scores = {}
-
+"""
 def compute_points(col, arm, exp):
 
     points = 0
@@ -23,7 +27,7 @@ def compute_points(col, arm, exp):
         points += 1
 
     return points
-
+"""
 
 class RequestHandler(BaseHTTPRequestHandler):
 
@@ -92,7 +96,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.send_json({"error": "robot inconnu"},404)
                 return
 
-            points = compute_points(col,arm,exp)
+            points = battle.compute_points(col,arm,exp)
             scores[rid] += points
             print(
                 f"[STEP] {rid} "
@@ -120,6 +124,7 @@ def run():
 
     server = HTTPServer((HOST, PORT),RequestHandler)
     print(f"Server running on {HOST}:{PORT}")
+    battle.print_rules()
     server.serve_forever()
 
 
