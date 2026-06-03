@@ -6,12 +6,13 @@ class RobotController:
     def __init__(self):
         self.robot = None
         self.is_connected=False
-        self.color_references = {"Red" : (122,22,32), 
-                                 "Green" : (47,45,41),
-                                 "Blue" : (75,80,108),
+        self.color_references = {"Black" : (122,22,32), 
+                                 "Purple" : (47,45,41),
+                                 "Dark Blue" : (75,80,108),
                                  "Yellow" : (278,113,81),
-                                 "Pink" : (141,32,55),
-                                 "Black" : (255,255,255)}
+                                 "Cyan" : (141,32,55),
+                                 "Green" : (255,255,255),
+                                 "Red" : (255,0,0)}
 
     def connect(self, ip_address):
         try:
@@ -40,7 +41,7 @@ class RobotController:
             print(f"Error reading battery : {e}")
             return None
 
-    def read_RGB_color(self, sensor_name = 'left'):
+    def _read_RGB_color(self, sensor_name = 'left'):
         if not self._check_connexion():
             print("Cannot read color, robot is not connected")
             return None
@@ -57,7 +58,7 @@ class RobotController:
             return None
     
     def get_actual_color_name(self):
-        RGB_measure = self.read_RGB_color()
+        RGB_measure = self._read_RGB_color()
         if RGB_measure is None:
             return "Sensor didn't work"
         
@@ -74,7 +75,7 @@ class RobotController:
             print("Cannot calibrate: the robot is not connected")
             return
 
-        colors_to_calibrate = ["Red","Green","Blue","Yellow", "Pink", "Black"] #A REMPLIR
+        colors_to_calibrate = ["Black","Purple","Dark Blue","Yellow","Cyan", "Green", "Red"] #A REMPLIR
         
         print("====Calibrating colors====\n")
 
@@ -86,7 +87,7 @@ class RobotController:
 
             print(f"Color :{color} acquisition...")
             for i in range(10):
-                measure = self.read_RGB_color(sensor_name=sensor_name)
+                measure = self._read_RGB_color(sensor_name=sensor_name)
                 if measure is not None:
                     red_measures.append(measure[0])
                     green_measures.append(measure[1])
