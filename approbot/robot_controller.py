@@ -6,13 +6,13 @@ class RobotController:
     def __init__(self):
         self.robot = None
         self.is_connected=False
-        self.color_references = {"Black" : (122,22,32), 
-                                 "Purple" : (47,45,41),
-                                 "Dark Blue" : (75,80,108),
-                                 "Yellow" : (278,113,81),
-                                 "Cyan" : (141,32,55),
-                                 "Green" : (255,255,255),
-                                 "Red" : (255,0,0)}
+        self.color_references = {"Black" : (25,12,11), 
+                                 "Purple" : (140,32,55),
+                                 "Dark Blue" : (33,22,30),
+                                 "Yellow" : (271,110,78),
+                                 "Cyan" : (71,75,100),
+                                 "Green" : (47,43,40),
+                                 "Red" : (122,23,32)}
 
     def connect(self, ip_address):
         try:
@@ -143,7 +143,7 @@ class RobotController:
             self.is_connected=False
             print("The robot is disconnected")
 
-    def _move_arm(self, side, angle, _move_time=1500):
+    def _move_arm(self, side, angle, _move_time=1000):
         if side == "left":
             self.robot.move_joint("left arm",angle, _move_time)
         elif side == "right":
@@ -151,7 +151,7 @@ class RobotController:
         else:
             print(f"move_arm: the only direction known is left or right, or, you indicated {side}")
         
-    def _step(self, direction, step_number, _move_time=1500):
+    def _step(self, direction, step_number, _move_time=1000):
         if direction == "forward":
             self.robot.walk(step_number, move_time=_move_time)
         elif direction == "backward":
@@ -161,10 +161,10 @@ class RobotController:
         else:
             print(f"step: the only direction known is forward, backward, left or right or, you indicated {direction}")
 
-    def _eye_expression(self, emotion):
+    def _eye_expression(self, emotion, move_time=500):
         valid_emotion = {"angry", "excited", "normal", "wide", "wiggle"}
         if emotion in valid_emotion:
-            self.robot.eyes(emotion)
+            self.robot.eyes(emotion, move_time)
         else:
             print(f"eye_expression: the only valid expressions are {valid_emotion} or you indicated {emotion}")
         
