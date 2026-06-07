@@ -7,12 +7,12 @@ class RobotController:
         self.robot = None
         self.is_connected=False
         self.color_references = {"Black" : (25,12,11), 
-                                 "Purple" : (140,32,55),
+                                 "Purple" : (122,26,40),
                                  "Dark Blue" : (33,22,30),
                                  "Yellow" : (271,110,78),
                                  "Cyan" : (71,75,100),
                                  "Green" : (47,43,40),
-                                 "Red" : (122,23,32)}
+                                 "Red" : (105,17,21)}
 
     def connect(self, ip_address):
         try:
@@ -51,7 +51,6 @@ class RobotController:
         blue = self.robot.get_color_sensor_value_by_channel(sensor_name, "blue")
 
         if red is not None and green is not None and blue is not None:
-            print(f"Colors read : Red:{red}, Green:{green}, Blue:{blue}")
             return (red,green,blue)
         else:
             print("The sensor didn't work")
@@ -68,6 +67,7 @@ class RobotController:
                         (color_ref[2]-RGB_measure[2])**2)
             return distance
         color_name = min(self.color_references.keys(), key=lambda color: distance(self.color_references[color]))
+        print(f"color read : {color_name}")
         return color_name
 
     def calibrate_color(self, sensor_name="left"):
@@ -129,9 +129,29 @@ class RobotController:
         elif actionCode == "ALB":
             self._move_arm("left", -100)
         elif actionCode == "XNG":
-            self._eye_expression("angry")
+            self._reset_position()
+            self.robot.eyes("angry", blocking=False)
+            self.robot.disco_color("red")
         elif actionCode == "XNT":
-            self._eye_expression("normal")
+            self._reset_position()
+            self.robot.eyes("normal", blocking=False)
+        elif actionCode == "XSD":
+            self._reset_position()
+            self.robot.eyes(-120) #value to test
+            self.robot.disco_color("blue")
+        elif actionCode == "XHP":
+            self.dance()
+            self.robot.disco_color("green")
+        elif actionCode == "XDN":
+            self.dance()
+            self.robot.eyes("wiggle", blocking=False)
+            raimbow_color = [(255,0,0),(255, 165, 0), (255, 255, 0), (0, 128, 0),(0,0,255),(75,0,130),(138,43,226)]
+            for i in range(3):
+                for color in raimbow_color:
+                    self.robot.disco_color(color)
+                    time.sleep(0.15)
+
+          
         else:
             print(f"the action code you filled : {actionCode} doesn't exist")
             return False
@@ -143,11 +163,11 @@ class RobotController:
             self.is_connected=False
             print("The robot is disconnected")
 
-    def _move_arm(self, side, angle, _move_time=1000):
+    def _move_arm(self, side, angle, _move_time=1000, blocking = False):
         if side == "left":
-            self.robot.move_joint("left arm",angle, _move_time)
+            self.robot.move_joint("left arm",angle, _move_time, blocking=blocking)
         elif side == "right":
-            self.robot.move_joint("right arm", angle, _move_time)
+            self.robot.move_joint("right arm", angle, _move_time, blocking=blocking)
         else:
             print(f"move_arm: the only direction known is left or right, or, you indicated {side}")
         
@@ -160,13 +180,21 @@ class RobotController:
             self.robot.sidestep(direction,step_number,move_time= _move_time)
         else:
             print(f"step: the only direction known is forward, backward, left or right or, you indicated {direction}")
-
-    def _eye_expression(self, emotion, move_time=500):
-        valid_emotion = {"angry", "excited", "normal", "wide", "wiggle"}
-        if emotion in valid_emotion:
-            self.robot.eyes(emotion, move_time)
-        else:
-            print(f"eye_expression: the only valid expressions are {valid_emotion} or you indicated {emotion}")
         
     def _reset_position(self):
         self.robot.stand_straight()
+        self.robot.disco_off()
+
+    def dance(self):
+        self.robot.move_joint("hip",30,move_time=1000, blocking=False)
+        self._move_arm("left",100)
+        self._move_arm("right",100, blocking=True)
+        self.robot.move_joint("hip",-30, move_time=1000, blocking=False)
+        self._move_arm("left", -100)
+        self._move_arm("right",-100, blocking=True)
+        self.robot.move_joint("hip",0)
+        self._move_arm("left",0)
+        self._move_arm("right",0, blocking=True)
+
+        self._reset_position()
+        
