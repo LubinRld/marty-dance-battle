@@ -16,14 +16,22 @@ class RobotController:
 
     def connect(self, ip_address):
         try:
+
+            if ip_address == "test": #A commenter quand je fais pas des tests
+                self.is_connected=True
+                return True
             self.robot=Marty("wifi", ip_address)
+        
+            battery = self.robot.get_battery_remaining() #pour être sur qu'il est bien connecté.
+            if battery is None or battery==0:
+                raise Exception("The robot didn't respond")
             self.is_connected=True
             print("The robot is connected")
-            #print(Marty.JOINT_IDS)
-            #print(self.robot.get_add_ons_status())
+            return True
         except Exception as e:
             print(f"Connection failed : {e}")
             self.is_connected=False
+            return False
     
     def _check_connexion(self):
         if self.is_connected==False or self.robot is None:
