@@ -79,39 +79,30 @@ class RobotController:
         print(f"color read : {color_name}")
         return color_name
 
-    def calibrate_color(self, sensor_name="left"):
+    def calibrate_color(self,color, sensor_name="left"):
         if not self._check_connexion():
             print("Cannot calibrate: the robot is not connected")
             return
-
-        colors_to_calibrate = ["Black","Purple","Dark Blue","Yellow","Cyan", "Green", "Red"] #A REMPLIR
         
-        print("====Calibrating colors====\n")
+        red_measures = []
+        green_measures = []
+        blue_measures = []
 
-        for color in colors_to_calibrate:
-            input(f"Place Marty's left foot on the {color}, then press entry")
-            red_measures = []
-            green_measures = []
-            blue_measures = []
-
-            print(f"Color :{color} acquisition...")
-            for i in range(10):
-                measure = self._read_RGB_color(sensor_name=sensor_name)
-                if measure is not None:
-                    red_measures.append(measure[0])
-                    green_measures.append(measure[1])
-                    blue_measures.append(measure[2])
-                time.sleep(0.1)
-            measure_number=len(red_measures)
-            if measure_number>0:
-                red_mean=sum(red_measures)//measure_number
-                green_mean=sum(green_measures)//measure_number
-                blue_mean=sum(blue_measures)//measure_number
-                self.color_references[color]=(red_mean, green_mean, blue_mean)
-                print(f"{color} updated : {self.color_references[color]}")
-            else:
-                print(f"Error, A problem happenned while calibrating the color : {color}. Please try again")
-
+        for i in range(10):
+            measure = self._read_RGB_color(sensor_name=sensor_name)
+            if measure is not None:
+                red_measures.append(measure[0])
+                green_measures.append(measure[1])
+                blue_measures.append(measure[2])
+            time.sleep(0.1)
+        measure_number=len(red_measures)
+        if measure_number>0:
+            red_mean=sum(red_measures)//measure_number
+            green_mean=sum(green_measures)//measure_number
+            blue_mean=sum(blue_measures)//measure_number
+            self.color_references[color]=(red_mean, green_mean, blue_mean)
+            return True
+        return False
 
     def execute_action(self, actionCode, nbrAction=None):
         if not self._check_connexion():
@@ -119,7 +110,7 @@ class RobotController:
             return False
         if actionCode == "RESET":
             self._reset_position()
-        if actionCode == "U":
+        elif actionCode == "U":
             self._step("forward", nbrAction)
         elif actionCode == "B":
             self._step("backward", nbrAction)

@@ -106,6 +106,8 @@ class Interface(QMainWindow):
         self.window_stack.addWidget(window)
     
     def create_robot_page(self):
+        self.color_list = ["Black","Purple","Dark Blue","Yellow","Cyan", "Green", "Red"]
+        self.index_color = 0
         window = QWidget()
         layout = QVBoxLayout()
         title=QLabel("Manual Control")
@@ -149,14 +151,49 @@ class Interface(QMainWindow):
         btn_back.clicked.connect(lambda: self.movement_button_action("B")) 
         btn_reset.clicked.connect(lambda: self.movement_button_action("RESET"))
         layout.addLayout(grid_layout)
+        
+
+        self.label_order = QLabel(f"Place Marty's left foot on the {self.color_list[0]}")
+        self.label_order.setStyleSheet("font-size:16px; font-weight: bold; color: #E67E22;")
+        self.label_order.hide()
+        layout.addWidget(self.label_order, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.calibrate_btn= QPushButton("Calibrate")
+        self.calibrate_btn.clicked.connect(self.calibrate_button_action)
+        layout.addWidget(self.calibrate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+
         layout.addStretch()
         window.setLayout(layout)
         self.window_stack.addWidget(window)
+
+        self.calibration_started = False
 
     def movement_button_action(self, action_code):
         self.movement_worker = MovementWorker(self.marty,action_code=action_code)
         self.movement_worker.start()
 
+    def calibrate_button_action(self):
+
+        if not self.calibration_started:
+            self.calibration_started=True
+            self.label_order.show()
+            return
+        actual_color = self.color_list[self.index_color]
+        success = self.marty.calibrate_color(actual_color)
+
+        if success:
+            self.index_color+=1
+
+            if self.index_color<len(self.color_list):
+                next_color = self.color_list[self.index_color]
+                self.label_order.setText(f"Place Marty's left foot ont the {next_color}")
+
+            else:
+                self.label_order.setText("Calibration Succeed!")
+                self.label_order.setStyleSheet("font-size: 16px; font-weight: bold; color: green;")
+                self.calibration_started = False
+                self.index_color=0
+        else:
+            self.label_order.setText(f"Error on {actual_color}, try again")
     def connexion_button_action(self):
         ip_entered = self.text_field.text()
         self.label_status.setStyleSheet("color:green;")
