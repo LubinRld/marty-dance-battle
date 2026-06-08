@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPixmap
 
 import robot_controller
+import robot_client
 
 class ConnexionWorker(QThread):
     is_connected = pyqtSignal(bool)
@@ -33,6 +34,7 @@ class Interface(QMainWindow):
         self.resize(500,480)
 
         self.marty = robot_controller.RobotController()
+        self.ref_connected = False
 
         self.window_stack = QStackedWidget()
         self.setCentralWidget(self.window_stack)
@@ -161,6 +163,36 @@ class Interface(QMainWindow):
         self.calibrate_btn.clicked.connect(self.calibrate_button_action)
         layout.addWidget(self.calibrate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
+        layout.addSpacing(20)
+
+        self.input_ref_ip = QLineEdit()
+        self.input_ref_ip.setPlaceholderText("Pls enter ref IP")
+        self.input_ref_ip.setMinimumWidth(250)
+        self.input_ref_ip.setStyleSheet("""
+            QLineEdit
+            {
+                color: black;
+                padding:8px;
+                font-size: 14px;
+                border: 2px solid #E74C3C;
+                border-radius: 6px;
+                background-color: blue;
+            }
+            QLineEdit:focus {border: 2px solid #C0392B;}
+                                        """)
+        layout.addWidget(self.input_ref_ip, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.ref_connexion_button = QPushButton("Ref : Deconnected")
+        self.ref_connexion_button.setStyleSheet("""
+            padding:10px;
+            background-color: #E74C3C;
+            color:white;
+            font-weight:bold;
+            border-radius:8px
+                                                """)
+        self.ref_connexion_button.clicked.connect(self.ref_connexion_button_action)
+        layout.addWidget(self.ref_connexion_button, alignment=Qt.AlignmentFlag.AlignCenter)
+
+
         layout.addStretch()
         window.setLayout(layout)
         self.window_stack.addWidget(window)
@@ -194,6 +226,7 @@ class Interface(QMainWindow):
                 self.index_color=0
         else:
             self.label_order.setText(f"Error on {actual_color}, try again")
+
     def connexion_button_action(self):
         ip_entered = self.text_field.text()
         self.label_status.setStyleSheet("color:green;")
@@ -204,6 +237,31 @@ class Interface(QMainWindow):
         
         self.worker.start()
     
+    def ref_connexion_button_action(self):
+        if not self.ref_connected:
+
+            ip_entered = self.input_ref_ip.text()
+
+            self.client = robot_client.RobotClient(host=ip_entered)
+            self.ref_connexion_button.setText("Ref research...")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #F39C12; color: white; font-weight: bold; border-radius: 8px;")
+            QApplication.processEvents()
+
+            if self.client.connect():
+                self.ref_connected=True
+                self.ref_connexion_button.setText("Ref Connected")
+                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 8px;")
+                self.input_ref_ip.setEnabled(False)
+            else:
+                self.ref_connexion_button.setText("Error, couldn't find the ref")
+                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+        else:
+            self.client.disconnect()
+            self.ref_connected=False
+            self.ref_connexion_button.setText("Ref : Disconnected")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+            self.input_ref_ip.setEnabled(True)
+
     def connexion_action(self, is_connected):
         if is_connected:
             self.window_stack.setCurrentIndex(1)
@@ -211,6 +269,7 @@ class Interface(QMainWindow):
             self.label_status.setStyleSheet("color:red;")
             self.label_status.setText("Error, please enter a valid IP address")
     
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     interface = Interface()
