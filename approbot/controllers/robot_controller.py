@@ -1,20 +1,15 @@
 from martypy import Marty
 import time
 import threading
+import config
 
 class RobotController:
 
     def __init__(self):
         self.robot = None
         self.is_connected=False
-        self.color_references = {"Black" : (25,12,11), 
-                                 "Purple" : (122,26,40),
-                                 "Dark Blue" : (33,22,30),
-                                 "Yellow" : (271,110,78),
-                                 "Cyan" : (71,75,100),
-                                 "Green" : (47,43,40),
-                                 "Red" : (105,17,21)}
-
+        self.color_references = config.DEFAULT_COLOR_REFERENCES.copy()
+        
     def connect(self, ip_address):
         try:
 
@@ -200,4 +195,3 @@ class RobotController:
         self._move_arm("right",0, blocking=True)
         """
         self._reset_position()
-        

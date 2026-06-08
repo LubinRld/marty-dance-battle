@@ -1,25 +1,14 @@
-import robot_controller
-import robot_client
-import read_dance
+import config
 import time
 
 class GameManager:
-    def __init__(self, robot_controller:robot_controller.RobotController, robot_client:robot_client.RobotClient, dance_reader:read_dance.ReadDance):
+    def __init__(self, robot_controller, robot_client, dance_reader):
         self.robot = robot_controller
         self.client=  robot_client
         self.reader = dance_reader
         self.moves = []
         self.acts = {}
-        self.color_traduction = {
-            "Black" : "N",
-            "Purple" : "P",
-            "Dark Blue" : "B",
-            "Yellow" : "Y",
-            "Cyan" : "C",
-            "Green" : "G",
-            "Red":"R"
-            }
-
+        self.color_traduction = config.COLOR_TRADUCTION.copy()
     def prepare_game(self, ip_adress):
         self.robot.connect(ip_adress)
         self.moves = self.reader.getMovement()
