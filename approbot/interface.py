@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout,QPushButton,QLineEdit,QLabel,QStackedWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout,QPushButton,QLineEdit,QLabel,QStackedWidget, QGridLayout
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPixmap
 
@@ -112,8 +112,50 @@ class Interface(QMainWindow):
         title.setStyleSheet("font-size:20px; font-weight:bold;color:#2C3E50;")
         layout.addWidget(title, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addSpacing(30)
+
+        grid_layout = QGridLayout()
+        btn_up = QPushButton("UP")
+        btn_back = QPushButton("DOWN")
+        btn_left = QPushButton("LEFT")
+        btn_right = QPushButton("RIGHT")
+        btn_reset = QPushButton("RESET")
+
+        btn_style = """
+            QPushButton 
+            {
+                padding: 15px;
+                background-color: #3498DB;
+                color: white;
+                font-weight: bold;
+                border-radius: 10px;
+            }
+            QPushButton:hover {background-color: #2980B9;}
+            """
+        btn_up.setStyleSheet(btn_style)
+        btn_back.setStyleSheet(btn_style)
+        btn_left.setStyleSheet(btn_style) 
+        btn_right.setStyleSheet(btn_style)
+        btn_reset.setStyleSheet(btn_style)
+
+        grid_layout.addWidget(btn_up, 0,1)
+        grid_layout.addWidget(btn_reset,1,1)
+        grid_layout.addWidget(btn_left,2,0)
+        grid_layout.addWidget(btn_back,2,1)
+        grid_layout.addWidget(btn_right,2,2)
+
+        btn_up.clicked.connect(lambda: self.movement_button_action("U")) 
+        btn_left.clicked.connect(lambda: self.movement_button_action("L")) 
+        btn_right.clicked.connect(lambda: self.movement_button_action("R")) 
+        btn_back.clicked.connect(lambda: self.movement_button_action("B")) 
+        btn_reset.clicked.connect(lambda: self.movement_button_action("RESET"))
+        layout.addLayout(grid_layout)
+        layout.addStretch()
         window.setLayout(layout)
         self.window_stack.addWidget(window)
+
+    def movement_button_action(self, action_code):
+        self.movement_worker = MovementWorker(self.marty,action_code=action_code)
+        self.movement_worker.start()
 
     def connexion_button_action(self):
         ip_entered = self.text_field.text()

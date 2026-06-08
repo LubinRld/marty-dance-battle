@@ -4,7 +4,7 @@ import requests
 ping = "10.113.26.100"
 
 class RobotClient:
-    def __init__(self, host="192.168.0.104", port=8000):
+    def __init__(self, host="localhost", port=8000):
         self.url = f"http://{host}:{port}"
         self.rid = None
     

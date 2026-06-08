@@ -117,17 +117,15 @@ class RobotController:
         if not self._check_connexion():
             print(f"The robot is not connected, you can't do the movement code : {actionCode}")
             return False
-        if actionCode == "U":
+        if actionCode == "RESET":
             self._reset_position()
+        if actionCode == "U":
             self._step("forward", nbrAction)
         elif actionCode == "B":
-            self._reset_position()
             self._step("backward", nbrAction)
         elif actionCode == "L":
-            self._reset_position()
             self._step("left", nbrAction)
         elif actionCode == "R":
-            self._reset_position()
             self._step("right", nbrAction)
         elif actionCode == "ARU":
             self._move_arm("right", 100)

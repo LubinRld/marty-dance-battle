@@ -36,6 +36,7 @@ class GameManager:
         for i in range(max_moves):
             index_move = i%given_moves
             nbr_action, action_code = self.moves[index_move]
+            self.robot._reset_position()
             self.robot.execute_action(action_code,nbr_action)
             time.sleep(2.5)
             arm_action = []
@@ -61,7 +62,6 @@ class GameManager:
                     self.robot._reset_position()
 
                 self.robot.execute_action(exp_to_do)
-
 
             if(len(arm_action)==0):
                 arm_action_translated="None"
