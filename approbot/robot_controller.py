@@ -1,5 +1,6 @@
 from martypy import Marty
 import time
+import threading
 
 class RobotController:
 
@@ -137,21 +138,23 @@ class RobotController:
             self.robot.eyes("normal", blocking=False)
         elif actionCode == "XSD":
             self._reset_position()
-            self.robot.eyes(-120) #value to test
+            self.robot.eyes(30) #value to test
             self.robot.disco_color("blue")
         elif actionCode == "XHP":
-            self.dance()
             self.robot.disco_color("green")
-        elif actionCode == "XDN":
             self.dance()
-            self.robot.eyes("wiggle", blocking=False)
-            raimbow_color = [(255,0,0),(255, 165, 0), (255, 255, 0), (0, 128, 0),(0,0,255),(75,0,130),(138,43,226)]
-            for i in range(3):
-                for color in raimbow_color:
-                    self.robot.disco_color(color)
-                    time.sleep(0.15)
-
-          
+        elif actionCode == "XDN":
+            def raimbow_led():
+                raimbow_color = [(255,0,0),(255, 165, 0), (255, 255, 0), (0, 128, 0),(0,0,255),(75,0,130),(138,43,226)]
+                for i in range(2):
+                    self.robot.eyes("wiggle", blocking=False)
+                    for color in raimbow_color:
+                        self.robot.disco_color(color)
+                        time.sleep(0.15)
+                
+            thread_leds = threading.Thread(target=raimbow_led)
+            thread_leds.start()
+            self.dance()
         else:
             print(f"the action code you filled : {actionCode} doesn't exist")
             return False
@@ -171,7 +174,7 @@ class RobotController:
         else:
             print(f"move_arm: the only direction known is left or right, or, you indicated {side}")
         
-    def _step(self, direction, step_number, _move_time=1000):
+    def _step(self, direction, step_number, _move_time=1500):
         if direction == "forward":
             self.robot.walk(step_number, move_time=_move_time)
         elif direction == "backward":
@@ -186,15 +189,18 @@ class RobotController:
         self.robot.disco_off()
 
     def dance(self):
-        self.robot.move_joint("hip",30,move_time=1000, blocking=False)
+        self.robot.move_joint("left knee",20,move_time=1000, blocking=False)
         self._move_arm("left",100)
         self._move_arm("right",100, blocking=True)
-        self.robot.move_joint("hip",-30, move_time=1000, blocking=False)
+        self.robot.move_joint("left knee",-20,move_time=1000, blocking=False)
+        self.robot.move_joint("right knee",-20, move_time=1000, blocking=False)
         self._move_arm("left", -100)
         self._move_arm("right",-100, blocking=True)
-        self.robot.move_joint("hip",0)
+        """"
+        self.robot.move_joint("left knee",0, move_time=1000)
+        self.robot.move_joint("right knee", 0, move_time=1000)
         self._move_arm("left",0)
         self._move_arm("right",0, blocking=True)
-
+        """
         self._reset_position()
         
