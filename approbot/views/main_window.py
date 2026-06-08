@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMainWindow, QStackedWidget
-
+from PyQt6.QtGui import QIcon
 import config  
 from controllers.robot_controller import RobotController  
 
@@ -12,6 +12,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(config.WINDOW_TITLE)
         self.setStyleSheet(config.BACKGROUND_STYLE)
         self.resize(config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
+        self.setWindowIcon(QIcon(config.WINDOW_ICON_PATH))
 
         self.marty = RobotController()
         self.client = None
