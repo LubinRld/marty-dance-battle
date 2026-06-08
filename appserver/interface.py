@@ -1,0 +1,253 @@
+from main import run
+
+from PyQt6.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QWidget,
+    QLabel,
+    QPushButton,
+    QTextEdit,
+    QListWidget,
+    QFrame,
+    QGridLayout,
+    QVBoxLayout
+)
+
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
+
+
+BACKG_COLOR = "#98d7d6"
+FRAME_COLOR = "#fed55a"
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Serveur Robot")
+        self.resize(1200, 700)
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        central_widget.setStyleSheet(
+            f"background-color: {BACKG_COLOR};"
+        )
+
+        grid = QGridLayout()
+        central_widget.setLayout(grid)
+        
+        self.logo = QLabel()
+        pixmap = QPixmap("./appserver/martygrise.png")
+        if pixmap.isNull():
+            self.logo.setText("Logo introuvable")
+        else:
+            pixmap = pixmap.scaled(
+                180,
+                180,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation
+            )
+            self.logo.setPixmap(pixmap)
+
+        self.logo.setAlignment(
+            Qt.AlignmentFlag.AlignLeft
+        )
+
+        self.robot_count = QLabel(
+            "Robots enregistrés : 12"
+        )
+
+        self.robot_count.setStyleSheet("""
+            font-size: 18px;
+            font-weight: bold;
+        """)
+
+        self.robot_selector = QListWidget()
+
+        robots = [
+            "Marty",
+            "Atlas",
+            "Wall-E",
+            "R2D2",
+            "Terminator",
+            "Optimus Prime"
+        ]
+
+        for robot in robots:
+            self.robot_selector.addItem(robot)
+
+        robot_frame = QFrame()
+        robot_frame.setStyleSheet(f"""
+            QFrame {{
+                background-color: {FRAME_COLOR};
+                border-radius: 10px;
+            }}
+        """)
+
+        robot_layout = QVBoxLayout()
+        robot_title = QLabel(
+            "Robots disponibles"
+        )
+
+        robot_title.setAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
+
+        robot_layout.addWidget(robot_title)
+        robot_layout.addWidget(self.robot_selector)
+        robot_frame.setLayout(robot_layout)
+        self.server_running = False
+
+        self.server_button = QPushButton(
+            "Démarrer le serveur"
+        )
+
+        self.server_button.clicked.connect(
+            self.toggle_server
+        )
+
+        self.server_button.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {FRAME_COLOR};
+                border-radius: 10px;
+                padding: 10px;
+                font-size: 16px;
+                font-weight: bold;
+            }}
+
+            QPushButton:hover {{
+                background-color: #ffd96f;
+            }}
+        """)
+
+        self.server_ip = QLabel(
+            "IP : 192.168.1.42"
+        )
+
+        self.server_ip.setStyleSheet("""
+            font-size: 16px;
+            font-weight: bold;
+        """)
+
+        fight_frame = QFrame()
+
+        fight_frame.setStyleSheet(f"""
+            QFrame {{
+                background-color: {FRAME_COLOR};
+                border-radius: 10px;
+            }}
+        """)
+
+        fight_layout = QVBoxLayout()
+        fight_title = QLabel(
+            "Combat en cours"
+        )
+
+        fight_title.setAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
+
+        self.fight_label = QLabel(
+            "Marty  VS  Atlas"
+        )
+
+        self.fight_label.setAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
+
+        self.fight_label.setStyleSheet("""
+            font-size: 24px;
+            font-weight: bold;
+        """)
+
+        fight_layout.addWidget(fight_title)
+        fight_layout.addWidget(self.fight_label)
+
+        fight_frame.setLayout(fight_layout)
+
+        logs_frame = QFrame()
+        logs_frame.setStyleSheet("""
+            QFrame {
+                background-color: {FRAME_COLOR};
+                border-radius: 10px;
+            }
+        """)
+
+        logs_layout = QVBoxLayout()
+        logs_title = QLabel("Logs")
+        self.logs = QTextEdit()
+        self.logs.setReadOnly(True)
+        self.logs.setStyleSheet("""
+            background-color: black;
+            border: none;
+        """)
+
+        self.logs.append(
+            "[INFO] Interface démarrée"
+        )
+
+        logs_layout.addWidget(logs_title)
+        logs_layout.addWidget(self.logs)
+
+        logs_frame.setLayout(logs_layout)
+
+        grid.addWidget(self.logo, 0, 0)
+        grid.addWidget(self.server_button, 0, 1)
+
+        grid.addWidget(self.robot_count, 1, 0)
+        grid.addWidget(self.server_ip, 1, 1)
+
+        grid.addWidget(
+            robot_frame,
+            2, 0,
+            2, 1
+        )
+
+        grid.addWidget(
+            fight_frame,
+            2, 1
+        )
+
+        grid.addWidget(
+            logs_frame,
+            3, 1
+        )
+
+        grid.setColumnStretch(0, 1)
+        grid.setColumnStretch(1, 1)
+
+        grid.setRowStretch(2, 1)
+        grid.setRowStretch(3, 2)
+
+    def toggle_server(self):
+
+        self.server_running = (
+            not self.server_running
+        )
+
+        if self.server_running:
+
+            self.server_button.setText(
+                "Arrêter le serveur"
+            )
+
+            self.logs.append(
+                "[INFO] Serveur démarré"
+            )
+        else:
+
+            self.server_button.setText(
+                "Démarrer le serveur"
+            )
+            self.logs.append(
+                "[INFO] Serveur arrêté"
+            )
+            
+
+
+app = QApplication([])
+
+window = MainWindow()
+window.show()
+
+app.exec()
