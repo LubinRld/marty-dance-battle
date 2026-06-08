@@ -60,8 +60,8 @@ class GameManager:
                 if len(arms_to_do)>0:
                     time.sleep(1.2)
                     self.robot._reset_position()
-
-                self.robot.execute_action(exp_to_do)
+                if exp_to_do is not None:
+                    self.robot.execute_action(exp_to_do)
 
             if(len(arm_action)==0):
                 arm_action_translated="None"
