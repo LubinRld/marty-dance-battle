@@ -1,10 +1,13 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout,QPushButton,QLineEdit,QLabel,QStackedWidget, QGridLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout,QPushButton,QLineEdit,QLabel,QStackedWidget, QGridLayout, QFileDialog
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPixmap
 
 import robot_controller
 import robot_client
+import read_dance
+import game_manager
+
 
 class ConnexionWorker(QThread):
     is_connected = pyqtSignal(bool)
@@ -25,6 +28,17 @@ class MovementWorker(QThread):
     
     def run(self):
         self.marty.execute_action(self.action_code,self.nbr_action)
+class GameWorker(QThread):
+    game_over_signal = pyqtSignal()
+
+    def __init__(self, manager):
+        super().__init__()
+        self.manager = manager
+    def run(self):
+        self.manager.play_game()
+        self.game_over_signal.emit()
+
+
 
 class Interface(QMainWindow):
     def __init__(self):
@@ -34,6 +48,7 @@ class Interface(QMainWindow):
         self.resize(500,480)
 
         self.marty = robot_controller.RobotController()
+        self.client = None
         self.ref_connected = False
 
         self.window_stack = QStackedWidget()
@@ -193,11 +208,72 @@ class Interface(QMainWindow):
         layout.addWidget(self.ref_connexion_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
 
+
+        layout.addSpacing(30)
+        self.label_file_path = QLabel("Pls select a .dance file")
+        self.label_file_path.setStyleSheet("color: #7F8C8D; font-style: italic;")
+        layout.addWidget(self.label_file_path, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        self.choose_file_btn = QPushButton("Choose a .dance file")
+        self.choose_file_btn.setStyleSheet("padding: 8px; background-color: #34495E; color: white; border-radius: 5px;")  
+        self.choose_file_btn.clicked.connect(self.choose_file_action)
+        layout.addWidget(self.choose_file_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addSpacing(10)
+
+        self.start_battle_btn = QPushButton("Start Battle")
+        self.start_battle_btn.setEnabled(False)
+        self.start_battle_btn.setStyleSheet("""
+            QPushButton { padding: 12px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 8px; min-width: 180px; }
+            QPushButton:disabled { background-color: #BDC3C7; color: #7F8C8D; }
+                                            """)
+        self.start_battle_btn.clicked.connect(self.start_game_action)
+        layout.addWidget(self.start_battle_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+
         layout.addStretch()
         window.setLayout(layout)
         self.window_stack.addWidget(window)
 
         self.calibration_started = False
+        self.file_path_danse = None
+
+    def choose_file_action(self):
+
+        fichier, _ = QFileDialog.getOpenFileName(
+            self, 
+            "Sélectionner ton fichier de danse", 
+            "", 
+            "Fichiers Danse (*.dance);;Tous les fichiers (*)"
+        )
+        
+        if fichier:
+            self.file_path_danse = fichier
+            self.label_file_path.setText(f"File loaded: {self.file_path_danse}")
+            self.label_file_path.setStyleSheet("color: #27AE60; font-weight: bold;")
+            self.start_battle_btn.setEnabled(True)
+        
+    def start_game_action(self):
+        if not self.file_path_danse:
+            return
+        if self.client is None:
+            self.label_file_path.setText("Pls connect the ref before starting the battle")
+            self.label_file_path.setStyleSheet("color: red; font-weight: bold;")
+            return 
+        reader = read_dance.ReadDance(self.file_path_danse)
+        self.manager = game_manager.GameManager(self.marty, self.client, reader)
+
+        self.manager.moves = reader.getMovement()
+        self.manager.acts = reader.getAct()
+
+        self.start_battle_btn.setEnabled(False)
+        self.start_battle_btn.setText("Battle en cours...")
+
+        self.game_worker = GameWorker(self.manager)
+        self.game_worker.game_over_signal.connect(self.battle_end_action)
+        self.game_worker.start()
+
+    def battle_end_action(self):
+        self.start_battle_btn.setEnabled(True)
+        self.start_battle_btn.setText("Start Battle")
 
     def movement_button_action(self, action_code):
         self.movement_worker = MovementWorker(self.marty,action_code=action_code)
