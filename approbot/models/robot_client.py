@@ -1,4 +1,3 @@
-import time
 import requests
 
 ping = "10.113.26.100"
