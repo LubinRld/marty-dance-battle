@@ -43,12 +43,26 @@ class GameManager:
             color = self.robot.get_actual_color_name()
             color_translated = self.color_traduction.get(color, color)
             if color_translated in self.acts:
+                arms_to_do = []
+                exp_to_do = None
+
                 for act in self.acts[color_translated]:
-                    self.robot.execute_action(act)
                     if "AL" in act or "AR" in act:
                         arm_action.append(act)
+                        arms_to_do.append(act)
                     elif "X" in act:
                         exp_action=act
+                        exp_to_do = act
+                for act in arms_to_do:
+                    self.robot.execute_action(act)
+
+                if len(arms_to_do)>0:
+                    time.sleep(1.2)
+                    self.robot._reset_position()
+
+                self.robot.execute_action(exp_to_do)
+
+
             if(len(arm_action)==0):
                 arm_action_translated="None"
             elif(len(arm_action)==1):
