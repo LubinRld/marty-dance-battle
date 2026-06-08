@@ -9,7 +9,7 @@ def main():
     my_reader = read_dance.ReadDance("approbot/example.dance")
 
     my_manager = game_manager.GameManager(my_robot,my_client,my_reader)
-    my_manager.prepare_game("192.168.0.103")
+    my_manager.prepare_game("192.168.1.5")
     my_manager.play_game()
     my_manager.end_game()
     
