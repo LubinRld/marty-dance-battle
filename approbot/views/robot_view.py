@@ -5,6 +5,7 @@ import config
 from models.read_dance import ReadDance
 from models.game_manager import GameManager
 from workers.movement_worker import MovementWorker
+from workers.connexion_ref_worker import ConnexionRefWorker
 from workers.game_worker import GameWorker
 from models import robot_client
 
@@ -117,23 +118,33 @@ class RobotView(QWidget):
             self.main_window.client = robot_client.RobotClient(host=ip_entered)
             self.ref_connexion_button.setText("Ref research...")
             self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #F39C12; color: white; font-weight: bold; border-radius: 8px;")
-            
-            QApplication.processEvents()
+            self.ref_connexion_button.setEnabled(False)
 
-            if self.main_window.client.connect():
-                self.main_window.ref_connected = True
-                self.ref_connexion_button.setText("Ref Connected")
-                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 8px;")
-                self.input_ref_ip.setEnabled(False)
-            else:
-                self.ref_connexion_button.setText("Error, couldn't find the ref")
-                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+            
+            self.connexion_ref_worker = ConnexionRefWorker(self.main_window.client)
+
+            self.connexion_ref_worker.is_connected.connect(self.connexion_ref_action)
+            self.connexion_ref_worker.start()
+
         else:
             self.main_window.client.disconnect()
             self.main_window.ref_connected = False
             self.ref_connexion_button.setText("Ref : Disconnected")
             self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
             self.input_ref_ip.setEnabled(True)
+        
+    def connexion_ref_action(self, is_connected):
+        self.ref_connexion_button.setEnabled(True)
+
+        if is_connected:
+                self.main_window.ref_connected = True
+                self.ref_connexion_button.setText("Ref Connected")
+                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 8px;")
+                self.input_ref_ip.setEnabled(False)
+        else:
+            self.ref_connexion_button.setText("Error, couldn't find the ref")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+
 
     def choose_file_action(self):
         fichier, _ = QFileDialog.getOpenFileName(
