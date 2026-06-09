@@ -58,7 +58,7 @@ class RobotView(QWidget):
         layout.addWidget(self.label_order, alignment=Qt.AlignmentFlag.AlignCenter)
         
         self.calibrate_btn = QPushButton("Calibrate")
-        self.calibrate_btn.clicked.connect(self.calibrate_button_action)
+        self.calibrate_btn.clicked.connect(lambda: self.main_window.window_stack.setCurrentIndex(2))
         layout.addWidget(self.calibrate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
         layout.addSpacing(20)
@@ -109,28 +109,6 @@ class RobotView(QWidget):
     def movement_button_action(self, action_code):
         self.movement_worker = MovementWorker(self.marty, action_code=action_code)
         self.movement_worker.start()
-
-    def calibrate_button_action(self):
-        if not self.calibration_started:
-            self.calibration_started = True
-            self.label_order.show()
-            return
-            
-        actual_color = self.color_list[self.index_color]
-        success = self.marty.calibrate_color(actual_color)
-
-        if success:
-            self.index_color += 1
-            if self.index_color < len(self.color_list):
-                next_color = self.color_list[self.index_color]
-                self.label_order.setText(f"Place Marty's left foot ont the {next_color}")
-            else:
-                self.label_order.setText("Calibration Succeed!")
-                self.label_order.setStyleSheet("font-size: 16px; font-weight: bold; color: green;")
-                self.calibration_started = False
-                self.index_color = 0
-        else:
-            self.label_order.setText(f"Error on {actual_color}, try again")
 
     def ref_connexion_button_action(self):
         if not self.main_window.ref_connected:
