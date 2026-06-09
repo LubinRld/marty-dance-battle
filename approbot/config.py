@@ -78,3 +78,48 @@ INPUT_REF_IP_STYLE = """
         border: 2px solid #C0392B;
     }
 """
+CARD_STYLE = """
+    QWidget {
+        background-color: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+    QLabel { border: none; } /* Évite que les textes héritent de la bordure */
+"""
+
+INPUT_STYLE = """
+    QLineEdit, QComboBox {
+        padding: 10px;
+        font-size: 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background-color: #ffffff;
+        color: #000000;  /* Force le texte de base en noir */
+    }
+    
+    QLineEdit:focus, QComboBox:focus { 
+        border: 2px solid #3b82f6; 
+    }
+
+    /* 💡 C'EST CETTE RÈGLE QUI CORRIGE LA LISTE DÉROULANTE : */
+    QComboBox QAbstractItemView {
+        background-color: #ffffff;
+        color: #000000;  /* Force le texte de la liste déroulante en noir */
+        selection-background-color: #3b82f6; /* Couleur de surbrillance quand tu passes la souris */
+        selection-color: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+"""
+
+BTN_LAUNCH_STYLE = """
+    QPushButton {
+        background-color: #10b981;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 12px 40px;
+    }
+    QPushButton:hover { background-color: #059669; }
+    QPushButton:disabled { background-color: #cbd5e1; color: #94a3b8; }
+"""
