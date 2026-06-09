@@ -15,7 +15,6 @@ class ReadDance:
                     movement_number = int(line_cleaned[:-1])
                     direction = line_cleaned[-1]
                     movements.append((movement_number,direction))
-        print(movements)
         return movements
 
     def getAct(self):
