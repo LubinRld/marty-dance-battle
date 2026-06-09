@@ -5,6 +5,7 @@ from controllers.robot_controller import RobotController
 
 from .connexion_view import ConnexionView
 from .robot_view import RobotView
+from .calibration_view import CalibrationView
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -23,8 +24,10 @@ class MainWindow(QMainWindow):
 
         self.connexion_page = ConnexionView(self)
         self.robot_page = RobotView(self)
+        self.calibration_page = CalibrationView(self)
 
         self.window_stack.addWidget(self.connexion_page)
         self.window_stack.addWidget(self.robot_page)
+        self.window_stack.addWidget(self.calibration_page)
 
         self.window_stack.setCurrentIndex(0)
