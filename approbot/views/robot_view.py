@@ -145,6 +145,8 @@ class RobotView(QWidget):
             self.ref_connexion_button.setText("Error, couldn't find the ref")
             self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
 
+        self.update_battle_button_state()
+
 
     def choose_file_action(self):
         fichier, _ = QFileDialog.getOpenFileName(
@@ -157,16 +159,35 @@ class RobotView(QWidget):
             self.file_path_danse = fichier
             self.label_file_path.setText(f"File loaded: {self.file_path_danse}")
             self.label_file_path.setStyleSheet("color: #27AE60; font-weight: bold;")
-            self.start_battle_btn.setEnabled(True)
-        
+            self.update_battle_button_state()        
+
+    def update_battle_button_state(self):
+        has_file = self.file_path_danse is not None
+        is_ref_connected = self.main_window.ref_connected
+
+        self.start_battle_btn.setEnabled(has_file and is_ref_connected)
+
     def start_game_action(self):
         if not self.file_path_danse:
             return
-        if self.main_window.client is None:
-            self.label_file_path.setText("Pls connect the ref before starting the battle")
-            self.label_file_path.setStyleSheet("color: red; font-weight: bold;")
-            return 
+        
+        self.start_battle_btn.setEnabled(False)
+        self.start_battle_btn.setText("Ref connexion verification...")
+
+        self.check_live_worker = ConnexionRefWorker(self.main_window.client, True)
+        self.check_live_worker.is_live.connect(self.start_game_check)
+        self.check_live_worker.start()
             
+    def start_game_check(self, is_live):
+        if not is_live:
+            self.main_window.ref_connected = False
+            self.ref_connexion_button.setText("Ref : Disconnected")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+            self.input_ref_ip.setEnabled(True)
+            self.start_battle_btn.setText("Start Battle")
+            self.update_battle_button_state()
+            return
+        
         reader = ReadDance(self.file_path_danse)
         self.manager = GameManager(self.marty, self.main_window.client, reader)
 
