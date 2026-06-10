@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QLineEdit, QFileDialog,QApplication
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QLineEdit, QFileDialog,QHBoxLayout
 from PyQt6.QtCore import Qt
 
 import config  
@@ -27,37 +27,57 @@ class RobotView(QWidget):
         layout.addWidget(title, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addSpacing(30)
 
-        grid_layout = QGridLayout()
+        grid_step_layout = QGridLayout()
         btn_up = QPushButton("UP")
         btn_back = QPushButton("DOWN")
         btn_left = QPushButton("LEFT")
         btn_right = QPushButton("RIGHT")
         btn_reset = QPushButton("RESET")
 
+        grid_arm_layout= QGridLayout()
+        btn_left_arm_down = QPushButton("ALB")
+        btn_left_arm_up = QPushButton("ALU")
+        btn_right_arm_down = QPushButton("ARB")
+        btn_right_arm_up = QPushButton("ARU")
+
         btn_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
         btn_back.setStyleSheet(config.BTN_MOVEMENT_STYLE)
         btn_left.setStyleSheet(config.BTN_MOVEMENT_STYLE) 
         btn_right.setStyleSheet(config.BTN_MOVEMENT_STYLE)
         btn_reset.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        btn_left_arm_down.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        btn_left_arm_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        btn_right_arm_down.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        btn_right_arm_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
 
-        grid_layout.addWidget(btn_up, 0, 1)
-        grid_layout.addWidget(btn_reset, 1, 1)
-        grid_layout.addWidget(btn_left, 1, 0)
-        grid_layout.addWidget(btn_back, 2, 1)
-        grid_layout.addWidget(btn_right, 1, 2)
+        grid_step_layout.addWidget(btn_up, 0, 1)
+        grid_step_layout.addWidget(btn_reset, 1, 1)
+        grid_step_layout.addWidget(btn_left, 1, 0)
+        grid_step_layout.addWidget(btn_right, 1, 2)
+        grid_step_layout.addWidget(btn_back, 2, 1)
+
+        grid_arm_layout.addWidget(btn_left_arm_up, 0,0)
+        grid_arm_layout.addWidget(btn_right_arm_up, 0,1)
+        grid_arm_layout.addWidget(btn_left_arm_down, 1,0)
+        grid_arm_layout.addWidget(btn_right_arm_down, 1,1)
 
         btn_up.clicked.connect(lambda: self.movement_button_action("U")) 
         btn_left.clicked.connect(lambda: self.movement_button_action("L")) 
         btn_right.clicked.connect(lambda: self.movement_button_action("R")) 
         btn_back.clicked.connect(lambda: self.movement_button_action("B")) 
         btn_reset.clicked.connect(lambda: self.movement_button_action("RESET"))
-        layout.addLayout(grid_layout)
-        
-        self.label_order = QLabel(f"Place Marty's left foot on the {self.color_list[0]}")
-        self.label_order.setStyleSheet("font-size:16px; font-weight: bold; color: #E67E22;")
-        self.label_order.hide()
-        layout.addWidget(self.label_order, alignment=Qt.AlignmentFlag.AlignCenter)
-        
+
+        btn_left_arm_down.clicked.connect(lambda: self.movement_button_action("ALB"))
+        btn_left_arm_up.clicked.connect(lambda: self.movement_button_action("ALU"))
+        btn_right_arm_down.clicked.connect(lambda: self.movement_button_action("ARB"))
+        btn_right_arm_up.clicked.connect(lambda: self.movement_button_action("ARU"))
+
+        layout.addLayout(grid_step_layout)
+        layout.addSpacing(20)
+
+        layout.addLayout(grid_arm_layout)
+        layout.addSpacing(20)
+
         self.calibrate_btn = QPushButton("Calibrate")
         self.calibrate_btn.clicked.connect(lambda: self.main_window.window_stack.setCurrentIndex(2))
         layout.addWidget(self.calibrate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
