@@ -78,6 +78,30 @@ class RobotView(QWidget):
         layout.addLayout(grid_arm_layout)
         layout.addSpacing(20)
 
+        emotion_layout = QHBoxLayout()
+
+        btn_emotion_sad = QPushButton("SAD")
+        btn_emotion_angry = QPushButton("ANGRY")
+        btn_emotion_happy = QPushButton("HAPPY")
+        btn_emotion_excited = QPushButton("EXCITED")
+
+        btn_emotion_sad.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        btn_emotion_angry.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        btn_emotion_happy.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        btn_emotion_excited.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+
+        btn_emotion_sad.clicked.connect(lambda: self.movement_button_action("XSD"))
+        btn_emotion_angry.clicked.connect(lambda: self.movement_button_action("XNG"))
+        btn_emotion_happy.clicked.connect(lambda: self.movement_button_action("XHP"))
+        btn_emotion_excited.clicked.connect(lambda: self.movement_button_action("XDN"))
+
+        emotion_layout.addWidget(btn_emotion_sad)
+        emotion_layout.addWidget(btn_emotion_angry)
+        emotion_layout.addWidget(btn_emotion_happy)
+        emotion_layout.addWidget(btn_emotion_excited)
+        
+        layout.addLayout(emotion_layout)
+
         self.calibrate_btn = QPushButton("Calibrate")
         self.calibrate_btn.clicked.connect(lambda: self.main_window.window_stack.setCurrentIndex(2))
         layout.addWidget(self.calibrate_btn, alignment=Qt.AlignmentFlag.AlignCenter)
