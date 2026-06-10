@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QLineEdit, QFileDialog,QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QLineEdit, QFileDialog,QHBoxLayout, QFrame
 from PyQt6.QtCore import Qt
 
 import config  
@@ -7,6 +7,7 @@ from models.game_manager import GameManager
 from workers.movement_worker import MovementWorker
 from workers.connexion_ref_worker import ConnexionRefWorker
 from workers.game_worker import GameWorker
+from workers.read_color_worker import ReadColorWorker
 from models import robot_client
 
 class RobotView(QWidget):
@@ -146,8 +147,48 @@ class RobotView(QWidget):
         self.start_battle_btn.clicked.connect(self.start_game_action)
         layout.addWidget(self.start_battle_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
+        layout.addSpacing(20)
+
+        self.color_indicator_square = QFrame()
+        self.color_indicator_square.setFixedSize(60,60)
+        self.color_indicator_square.setStyleSheet("background-color: #BDC3C7; border: 1px solid #7F8C8D; border-radius: 10px;")
+
+        self.color_name_label = QLabel("Unknown")
+        self.color_name_label.setStyleSheet("font-weight: bold; color: #2C3E50;")
+
+        self.btn_read_color = QPushButton("Read Color")
+        self.btn_read_color.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_read_color.clicked.connect(self.refresh_color_action)
+
+        layout.addWidget(self.color_indicator_square, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.color_name_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.btn_read_color, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addSpacing(20)
+
         layout.addStretch()
         self.setLayout(layout)
+
+
+
+    def refresh_color_action(self):
+
+        self.color_name_label.setText("Reading...")
+        self.btn_read_color.setEnabled(False)
+
+        self.read_color_worker = ReadColorWorker(self.marty)
+        self.read_color_worker.color_read_signal.connect(self.update_color)
+        self.read_color_worker.start()
+
+    def update_color(self, color):
+        css_colors = config.REAL_COLOR_RGB
+        if color in css_colors:
+            self.color_indicator_square.setStyleSheet(f"background-color : {css_colors[color]};border: 1px solid #1C2833;border-radius: 10px;")
+            self.color_name_label.setText(color)
+        else:
+            self.color_indicator_square.setStyleSheet("background-color: #BDC3C7; border: 1px solid #7F8C8D; border-radius: 10px;border-color: red")
+            self.color_name_label.setText("Error")
+
+
 
 
 

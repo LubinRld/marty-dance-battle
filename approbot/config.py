@@ -24,6 +24,17 @@ COLOR_TRADUCTION = {
     "Red": "R"
 }
 
+REAL_COLOR_RGB = {
+
+    "Black" : "#000000",
+    "Purple" : "#FF29F1",
+    "Dark Blue" : "#0000F0",
+    "Yellow": "#FFFF24",
+    "Cyan" : "#1AF8FF",
+    "Green" : "#1BF000",
+    "Red" : "#FF291A"
+}
+
 INPUT_MARTY_IP_STYLE = """
     QLineEdit {
         padding: 8px;
