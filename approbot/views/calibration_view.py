@@ -1,6 +1,7 @@
-# views/calibration_view.py
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QFrame, QApplication
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QComboBox, QFrame
 from PyQt6.QtCore import Qt
+
+from workers.calibration_worker import CalibrationWorker
 
 import config
 
@@ -12,8 +13,8 @@ class CalibrationView(QWidget):
 
         main_layout = QVBoxLayout()
         
-        back_btn = QPushButton("Back to Controls")
-        back_btn.setStyleSheet("""
+        self.back_btn = QPushButton("Back to Controls")
+        self.back_btn.setStyleSheet("""
             QPushButton {
                 background-color: #34495E;
                 color: white;
@@ -23,8 +24,8 @@ class CalibrationView(QWidget):
             }
             QPushButton:hover { background-color: #2C3E50; }
         """)
-        back_btn.clicked.connect(lambda: self.main_window.window_stack.setCurrentIndex(1))
-        main_layout.addWidget(back_btn, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.back_btn.clicked.connect(lambda: self.main_window.window_stack.setCurrentIndex(1))
+        main_layout.addWidget(self.back_btn, alignment=Qt.AlignmentFlag.AlignLeft)
         main_layout.addSpacing(10)
 
         title = QLabel("CALIBRATION PAGE")
@@ -69,13 +70,27 @@ class CalibrationView(QWidget):
         self.setLayout(main_layout)
 
     def run_calibration_action(self):
+        
         selected_color = self.color_dropdown.currentText()
         self.status_label.setStyleSheet("color: #F39C12;")
         self.status_label.setText(f"Calibrating {selected_color}...")
 
-        QApplication.processEvents() 
+        self.back_btn.setEnabled(False)
+        self.run_btn.setEnabled(False)
+        self.color_dropdown.setEnabled(False)
 
-        if self.marty.calibrate_color(selected_color):
+        self.calibration_worker = CalibrationWorker(self.marty, selected_color)
+        self.calibration_worker.is_calibration_done.connect(self.calibration_action)
+        self.calibration_worker.start()
+
+
+    def calibration_action(self, is_calibration_done):
+
+        self.back_btn.setEnabled(True)
+        self.run_btn.setEnabled(True)
+        self.color_dropdown.setEnabled(True)
+
+        if is_calibration_done:
             self.status_label.setStyleSheet("color: #2ECC71;")
             self.status_label.setText("Calibrating Done!")
         else:

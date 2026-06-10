@@ -77,7 +77,7 @@ class RobotController:
     def calibrate_color(self,color, sensor_name="left"):
         if not self._check_connexion():
             print("Cannot calibrate: the robot is not connected")
-            return
+            return False
         
         red_measures = []
         green_measures = []

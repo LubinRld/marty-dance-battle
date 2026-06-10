@@ -1,4 +1,3 @@
-# views/connexion_view.py
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
@@ -35,13 +34,13 @@ class ConnexionView(QWidget):
         self.text_field = QLineEdit()
         self.text_field.setPlaceholderText("Ex:192.168.1.4")
         self.text_field.setMinimumWidth(250)
-        self.text_field.setStyleSheet(config.INPUT_MARTY_IP_STYLE)  # Style extrait dans config.py
+        self.text_field.setStyleSheet(config.INPUT_MARTY_IP_STYLE)  
         layout.addWidget(self.text_field, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addSpacing(25)
         
         connexion_button = QPushButton("Try connexion")
         connexion_button.setMinimumWidth(150)
-        connexion_button.setStyleSheet(config.BTN_CONNEXION_STYLE)  # Style extrait dans config.py
+        connexion_button.setStyleSheet(config.BTN_CONNEXION_STYLE) 
         connexion_button.clicked.connect(self.connexion_button_action)
         layout.addWidget(connexion_button, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addSpacing(10)
