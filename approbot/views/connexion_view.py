@@ -20,7 +20,7 @@ class ConnexionView(QWidget):
         layout.addSpacing(40)
 
         image_label = QLabel()
-        pixmap = QPixmap("approbot/Logo.png")
+        pixmap = QPixmap(config.WINDOW_ICON_PATH)
         pixmap_2 = pixmap.scaledToWidth(150, Qt.TransformationMode.SmoothTransformation)
         image_label.setPixmap(pixmap_2)
         layout.addWidget(image_label, alignment=Qt.AlignmentFlag.AlignCenter)
