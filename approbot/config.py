@@ -65,14 +65,13 @@ BTN_CONNEXION_STYLE = """
 
 BTN_MOVEMENT_STYLE = """
     QPushButton {
-        padding: 15px;
-        background-color: #3498DB;
-        color: white;
-        font-weight: bold;
-        border-radius: 10px;
+        border: none;
+        background: transparent;
     }
-    QPushButton:hover {
-        background-color: #2980B9;
+
+    QPushButton:pressed {
+        padding-top: 3px;
+        padding-left: 3px;
     }
 """
 
