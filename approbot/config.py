@@ -2,7 +2,7 @@ WINDOW_TITLE = "MartyApp"
 BACKGROUND_STYLE = "background-color: #98d7d6;"
 WINDOW_WIDTH = 440
 WINDOW_HEIGHT = 500
-WINDOW_ICON_PATH = "approbot/Logo.png"
+WINDOW_ICON_PATH = "assets/Logo.png"
 
 DEFAULT_COLOR_REFERENCES = {
     "Black" : (25,12,11), 
