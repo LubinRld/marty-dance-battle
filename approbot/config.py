@@ -60,7 +60,7 @@ BTN_PRIMARY_STYLE = """
     }
 """
 
-BTN_REF_STYLE_DISCONNECTED = """
+BTN_REF_DISCONNECTED_STYLE = """
     QPushButton {
         background-color: #E74C3C;
         color: white;
@@ -73,6 +73,23 @@ BTN_REF_STYLE_DISCONNECTED = """
         background-color: #C0392B;
     }
 """
+
+BTN_REF_CONNECTED_STYLE = """
+    QPushButton {
+        padding: 10px; 
+        background-color: #2ECC71; 
+        color: white; 
+        font-weight: bold; 
+        border-radius: 6px;
+        border: none;
+    }
+    QPushButton:hover {
+        background-color: #27AE60; /* Un vert un peu plus foncé au survol */
+    }
+"""
+
+BTN_REF_WAITING_STYLE = "padding: 10px; background-color: #F39C12; color: white; font-weight: bold; border-radius: 6px;"
+
 REAL_COLOR_RGB = {
 
     "Black" : "#000000",
