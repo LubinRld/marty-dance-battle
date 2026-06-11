@@ -14,16 +14,7 @@ class CalibrationView(QWidget):
         main_layout = QVBoxLayout()
         
         self.back_btn = QPushButton("Back to Controls")
-        self.back_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #34495E;
-                color: white;
-                padding: 6px 12px;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover { background-color: #2C3E50; }
-        """)
+        self.back_btn.setStyleSheet(config.BTN_SECONDARY_STYLE)
         self.back_btn.clicked.connect(lambda: self.main_window.window_stack.setCurrentIndex(1))
         main_layout.addWidget(self.back_btn, alignment=Qt.AlignmentFlag.AlignLeft)
         main_layout.addSpacing(10)
@@ -55,7 +46,7 @@ class CalibrationView(QWidget):
         card_layout.addSpacing(5)
 
         self.run_btn = QPushButton("CALIBRATE")
-        self.run_btn.setStyleSheet(config.BTN_LAUNCH_STYLE)
+        self.run_btn.setStyleSheet(config.BTN_PRIMARY_STYLE)
         self.run_btn.clicked.connect(self.run_calibration_action)
         card_layout.addWidget(self.run_btn, alignment=Qt.AlignmentFlag.AlignCenter)
         card_layout.addSpacing(5)

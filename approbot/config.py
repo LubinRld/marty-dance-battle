@@ -24,6 +24,55 @@ COLOR_TRADUCTION = {
     "Red": "R"
 }
 
+BTN_SECONDARY_STYLE = """
+    QPushButton {
+        background-color: #34495E;
+        color: white;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 8px 15px;
+        border: none;
+    }
+    QPushButton:hover {
+        background-color: #2C3E50;
+    }
+    QPushButton:disabled {
+        background-color: #BDC3C7;
+        color: #7F8C8D;
+    }
+"""
+
+BTN_PRIMARY_STYLE = """
+    QPushButton {
+        background-color: #2ECC71;
+        color: white;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 10px 20px;
+        border: none;
+    }
+    QPushButton:hover {
+        background-color: #27AE60;
+    }
+    QPushButton:disabled {
+        background-color: #BDC3C7;
+        color: #7F8C8D;
+    }
+"""
+
+BTN_REF_STYLE_DISCONNECTED = """
+    QPushButton {
+        background-color: #E74C3C;
+        color: white;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 10px;
+        border: none;
+    }
+    QPushButton:hover {
+        background-color: #C0392B;
+    }
+"""
 REAL_COLOR_RGB = {
 
     "Black" : "#000000",
@@ -88,14 +137,7 @@ INPUT_REF_IP_STYLE = """
         border: 2px solid #C0392B;
     }
 """
-CARD_STYLE = """
-    QWidget {
-        background-color: #ffffff;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-    }
-    QLabel { border: none; } /* Évite que les textes héritent de la bordure */
-"""
+CARD_STYLE = "background: transparent; border: none;"
 
 INPUT_STYLE = """
     QLineEdit, QComboBox {
@@ -111,7 +153,6 @@ INPUT_STYLE = """
         border: 2px solid #3b82f6; 
     }
 
-    /* 💡 C'EST CETTE RÈGLE QUI CORRIGE LA LISTE DÉROULANTE : */
     QComboBox QAbstractItemView {
         background-color: #ffffff;
         color: #000000;  /* Force le texte de la liste déroulante en noir */
@@ -121,15 +162,3 @@ INPUT_STYLE = """
     }
 """
 
-BTN_LAUNCH_STYLE = """
-    QPushButton {
-        background-color: #10b981;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 8px;
-        padding: 12px 40px;
-    }
-    QPushButton:hover { background-color: #059669; }
-    QPushButton:disabled { background-color: #cbd5e1; color: #94a3b8; }
-"""
