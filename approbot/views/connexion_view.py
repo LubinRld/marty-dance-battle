@@ -40,7 +40,7 @@ class ConnexionView(QWidget):
         
         connexion_button = QPushButton("Try connexion")
         connexion_button.setMinimumWidth(150)
-        connexion_button.setStyleSheet(config.BTN_CONNEXION_STYLE) 
+        connexion_button.setStyleSheet(config.BTN_PRIMARY_STYLE) 
         connexion_button.clicked.connect(self.connexion_button_action)
         layout.addWidget(connexion_button, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addSpacing(10)
