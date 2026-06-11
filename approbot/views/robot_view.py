@@ -9,6 +9,7 @@ from workers.movement_worker import MovementWorker
 from workers.connexion_ref_worker import ConnexionRefWorker
 from workers.game_worker import GameWorker
 from workers.refresh_status_worker import RefreshStatusWorker
+from workers.ref_disconnexion_worker import RefDisconnexionWorker
 from models import robot_client
 
 class RobotView(QWidget):
@@ -209,7 +210,7 @@ class RobotView(QWidget):
         self.input_ref_ip.setMinimumWidth(250)
         self.input_ref_ip.setStyleSheet(config.INPUT_REF_IP_STYLE)
 
-        self.ref_connexion_button.setStyleSheet(config.BTN_REF_STYLE_DISCONNECTED)
+        self.ref_connexion_button.setStyleSheet(config.BTN_REF_DISCONNECTED_STYLE)
 
         ref_connexion_layout = QVBoxLayout()
         ref_connexion_layout.addWidget(ref_connexion_label)
@@ -296,13 +297,8 @@ class RobotView(QWidget):
         emotion_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         manual_control_layout.addLayout(emotion_layout)
         
-        self.calibrate_btn.setStyleSheet("""
-            QPushButton { padding: 8px 15px; background-color: #34495E; color: white; font-weight: bold; border-radius: 5px; }
-            QPushButton:hover { background-color: #2C3E50; }
-        """)
         manual_control_layout.addSpacing(10)
         manual_control_layout.addLayout(calibration_layout)
-
    
         battle_setup_container = QFrame()
         battle_setup_container.setStyleSheet("background: transparent; border: none;")
@@ -380,21 +376,33 @@ class RobotView(QWidget):
             
             self.main_window.client = robot_client.RobotClient(host=ip_entered)
             self.ref_connexion_button.setText("Ref research...")
-            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #F39C12; color: white; font-weight: bold; border-radius: 6px;")
+            self.ref_connexion_button.setStyleSheet(config.BTN_REF_WAITING_STYLE)
             self.ref_connexion_button.setEnabled(False)
 
-            
             self.connexion_ref_worker = ConnexionRefWorker(self.main_window.client)
-
             self.connexion_ref_worker.is_connected.connect(self.connexion_ref_action)
             self.connexion_ref_worker.start()
 
         else:
-            self.main_window.client.disconnect()
-            self.main_window.ref_connected = False
-            self.ref_connexion_button.setText("Ref : Disconnected")
-            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 6px;")
-            self.input_ref_ip.setEnabled(True)
+            self.ref_connexion_button.setText("Disconnecting...")
+            self.ref_connexion_button.setStyleSheet(config.BTN_REF_WAITING_STYLE)
+            self.ref_connexion_button.setEnabled(False)
+
+            self.disconnexion_worker = RefDisconnexionWorker(self.main_window.client)
+            self.disconnexion_worker.is_disconnected.connect(self.ref_disconnexion_action)
+            self.disconnexion_worker.start()
+            
+
+    def ref_disconnexion_action(self, is_disconnected):
+            self.ref_connexion_button.setEnabled(True)
+            if is_disconnected:
+                self.main_window.ref_connected = False
+                self.ref_connexion_button.setText("Ref : Disconnected")
+                self.ref_connexion_button.setStyleSheet(config.BTN_REF_DISCONNECTED_STYLE)
+                self.input_ref_ip.setEnabled(True)
+                self.update_battle_button_state()
+            else:
+                self.ref_connexion_button.setText("Error, couldn't disconnect the ref")
         
     def connexion_ref_action(self, is_connected):
         self.ref_connexion_button.setEnabled(True)
@@ -402,7 +410,7 @@ class RobotView(QWidget):
         if is_connected:
                 self.main_window.ref_connected = True
                 self.ref_connexion_button.setText("Ref Connected")
-                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 6px;")
+                self.ref_connexion_button.setStyleSheet(config.BTN_REF_CONNECTED_STYLE)
                 self.input_ref_ip.setEnabled(False)
         else:
             self.ref_connexion_button.setText("Error, couldn't find the ref")

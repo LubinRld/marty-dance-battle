@@ -41,10 +41,13 @@ class RobotClient:
             request = requests.post(url_bye, json = payload)
             if request.status_code == 200:
                 print("Robot successfully disconnected")
+                return True
             else:
                 print("A problem occured during disconnection")
+                return False
         except Exception as e:
-            print (f"Can't connect to the server : {e}")    
+            print (f"Can't connect to the server : {e}")
+            return False    
 
     def start(self):
         url_start = f"{self.url}/start"
