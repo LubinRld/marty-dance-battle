@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QLineEdit, QFileDialog,QHBoxLayout, QFrame
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QFont
 from PyQt6.QtCore import QSize, Qt
 
 import config  
@@ -8,7 +8,7 @@ from models.game_manager import GameManager
 from workers.movement_worker import MovementWorker
 from workers.connexion_ref_worker import ConnexionRefWorker
 from workers.game_worker import GameWorker
-from workers.read_color_worker import ReadColorWorker
+from workers.refresh_status_worker import RefreshStatusWorker
 from models import robot_client
 
 class RobotView(QWidget):
@@ -80,24 +80,33 @@ class RobotView(QWidget):
         grid_step_layout.addWidget(btn_right, 1, 2)
         grid_step_layout.addWidget(btn_back, 2, 1)
 
-        #Creation of color square widgets
+        #Creation of color square and battery widgets
+
+        self.battery_icon_label =QLabel()
+        self.battery_icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.battery_icon_label.setPixmap(self.create_battery_icon(100))
 
         self.color_indicator_square = QFrame()
         self.color_name_label = QLabel("Unknown")
-        self.btn_read_color = QPushButton("Read Color")
+        self.btn_refresh_status = QPushButton("Refresh Status")
 
         self.color_indicator_square.setFixedSize(60,60)
         self.color_indicator_square.setStyleSheet("background-color: #BDC3C7; border: 1px solid #7F8C8D; border-radius: 10px;")
 
         self.color_name_label.setStyleSheet("font-weight: bold; color: #2C3E50;")
 
-        self.btn_read_color.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        self.btn_read_color.clicked.connect(self.refresh_color_action)
+        self.btn_refresh_status.setStyleSheet(config.BTN_SECONDARY_STYLE)
+
+        self.btn_refresh_status.clicked.connect(self.refresh_status_action)
 
         color_square_layout = QVBoxLayout()
-        color_square_layout.addWidget(self.color_indicator_square)
-        color_square_layout.addWidget(self.color_name_label)
-        color_square_layout.addWidget(self.btn_read_color)
+        color_square_layout.setSpacing(8) 
+        
+        color_square_layout.addWidget(self.color_indicator_square, alignment=Qt.AlignmentFlag.AlignCenter)
+        color_square_layout.addWidget(self.color_name_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        color_square_layout.addWidget(self.battery_icon_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        color_square_layout.addWidget(self.btn_refresh_status, alignment=Qt.AlignmentFlag.AlignCenter)
 
         #Creation of arms movement buttons
 
@@ -182,7 +191,7 @@ class RobotView(QWidget):
 
         self.calibrate_btn = QPushButton("Calibrate Colors")
 
-        self.calibrate_btn.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.calibrate_btn.setStyleSheet(config.BTN_SECONDARY_STYLE)
 
         self.calibrate_btn.clicked.connect(lambda: self.main_window.window_stack.setCurrentIndex(2))
 
@@ -200,13 +209,7 @@ class RobotView(QWidget):
         self.input_ref_ip.setMinimumWidth(250)
         self.input_ref_ip.setStyleSheet(config.INPUT_REF_IP_STYLE)
 
-        self.ref_connexion_button.setStyleSheet("""
-            padding:10px;
-            background-color: #E74C3C;
-            color:white;
-            font-weight:bold;
-            border-radius:8px;
-        """)
+        self.ref_connexion_button.setStyleSheet(config.BTN_REF_STYLE_DISCONNECTED)
 
         ref_connexion_layout = QVBoxLayout()
         ref_connexion_layout.addWidget(ref_connexion_label)
@@ -225,7 +228,7 @@ class RobotView(QWidget):
 
 
         self.label_file_path.setStyleSheet("color: #7F8C8D; font-style: italic;")
-        self.choose_file_btn.setStyleSheet("padding: 8px; background-color: #34495E; color: white; border-radius: 5px;")  
+        self.choose_file_btn.setStyleSheet(config.BTN_SECONDARY_STYLE)  
 
 
         self.choose_file_btn.clicked.connect(self.choose_file_action)
@@ -239,10 +242,7 @@ class RobotView(QWidget):
         #Start Battle button
         self.start_battle_btn = QPushButton("Start Battle")
 
-        self.start_battle_btn.setStyleSheet("""
-            QPushButton { padding: 12px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 8px; min-width: 180px; }
-            QPushButton:disabled { background-color: #BDC3C7; color: #7F8C8D; }
-        """)
+        self.start_battle_btn.setStyleSheet(config.BTN_PRIMARY_STYLE)
 
         self.start_battle_btn.setEnabled(False)
         self.start_battle_btn.clicked.connect(self.start_game_action)
@@ -341,18 +341,24 @@ class RobotView(QWidget):
 
 
 
-    def refresh_color_action(self):
+    def refresh_status_action(self):
 
         self.color_name_label.setText("Reading...")
-        self.btn_read_color.setEnabled(False)
+        self.btn_refresh_status.setEnabled(False)
+        self.btn_refresh_status.setText("Reading...")
 
-        self.read_color_worker = ReadColorWorker(self.marty)
-        self.read_color_worker.color_read_signal.connect(self.update_color)
-        self.read_color_worker.start()
+        self.status_worker = RefreshStatusWorker(self.marty)
+        self.status_worker.status_updated_signal.connect(self.update_status)
+        self.status_worker.start()
 
-    def update_color(self, color):
+    def update_status(self, status_data):
+
         css_colors = config.REAL_COLOR_RGB
-        self.btn_read_color.setEnabled(True)
+        self.btn_refresh_status.setEnabled(True)
+        self.btn_refresh_status.setText("Refresh Status")
+        color, battery = status_data
+
+        self.battery_icon_label.setPixmap(self.create_battery_icon(battery))
         if color in css_colors:
             self.color_indicator_square.setStyleSheet(f"background-color : {css_colors[color]};border: 1px solid #1C2833;border-radius: 10px;")
             self.color_name_label.setText(color)
@@ -374,7 +380,7 @@ class RobotView(QWidget):
             
             self.main_window.client = robot_client.RobotClient(host=ip_entered)
             self.ref_connexion_button.setText("Ref research...")
-            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #F39C12; color: white; font-weight: bold; border-radius: 8px;")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #F39C12; color: white; font-weight: bold; border-radius: 6px;")
             self.ref_connexion_button.setEnabled(False)
 
             
@@ -387,7 +393,7 @@ class RobotView(QWidget):
             self.main_window.client.disconnect()
             self.main_window.ref_connected = False
             self.ref_connexion_button.setText("Ref : Disconnected")
-            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 6px;")
             self.input_ref_ip.setEnabled(True)
         
     def connexion_ref_action(self, is_connected):
@@ -396,11 +402,11 @@ class RobotView(QWidget):
         if is_connected:
                 self.main_window.ref_connected = True
                 self.ref_connexion_button.setText("Ref Connected")
-                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 8px;")
+                self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #2ECC71; color: white; font-weight: bold; border-radius: 6px;")
                 self.input_ref_ip.setEnabled(False)
         else:
             self.ref_connexion_button.setText("Error, couldn't find the ref")
-            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 6px;")
 
         self.update_battle_button_state()
 
@@ -439,7 +445,7 @@ class RobotView(QWidget):
         if not is_live:
             self.main_window.ref_connected = False
             self.ref_connexion_button.setText("Ref : Disconnected")
-            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 8px;")
+            self.ref_connexion_button.setStyleSheet("padding: 10px; background-color: #E74C3C; color: white; font-weight: bold; border-radius: 6px;")
             self.input_ref_ip.setEnabled(True)
             self.start_battle_btn.setText("Start Battle")
             self.update_battle_button_state()
@@ -461,3 +467,46 @@ class RobotView(QWidget):
     def battle_end_action(self):
         self.start_battle_btn.setEnabled(True)
         self.start_battle_btn.setText("Start Battle")
+
+    def create_battery_icon(self, percentage):
+        # 💡 NOUVELLES DIMENSIONS COMPACTES : Largeur 56px, Hauteur 28px
+        pixmap = QPixmap(56, 28)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # Définition de la couleur selon le pourcentage
+        if percentage > 50:
+            fill_color = QColor("#2ECC71") # Vert
+        elif percentage > 20:
+            fill_color = QColor("#F39C12") # Orange
+        else:
+            fill_color = QColor("#E74C3C") # Rouge
+
+        # Dessin du contour extérieur de la pile (Gris sombre)
+        painter.setPen(QColor("#34495E"))
+        painter.setBrush(QColor("#BDC3C7"))
+        # Ajustement du rectangle principal pour la taille réduite
+        painter.drawRoundedRect(3, 3, 44, 22, 4, 4)
+
+        # Dessin de la petite borne positive à droite
+        painter.setBrush(QColor("#34495E"))
+        painter.drawRoundedRect(47, 9, 4, 10, 1, 1)
+
+        # Dessin de la jauge interne de couleur
+        if percentage > 0:
+            max_width = 38
+            current_width = int((percentage / 100.0) * max_width)
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.setBrush(fill_color)
+            painter.drawRoundedRect(6, 6, current_width, 16, 2, 2)
+
+        # Écriture du texte du pourcentage par-dessus (police réduite à 8pt)
+        painter.setPen(QColor("#FFFFFF" if percentage > 35 else "#34495E"))
+        font = QFont("Arial", 8, QFont.Weight.Bold)
+        painter.setFont(font)
+        painter.drawText(3, 3, 44, 22, Qt.AlignmentFlag.AlignCenter, f"{percentage}%")
+
+        painter.end()
+        return pixmap
