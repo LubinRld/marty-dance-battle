@@ -37,49 +37,49 @@ class RobotView(QWidget):
 
         #Creation of movements buttons
 
-        btn_up = QPushButton()
-        btn_back = QPushButton()
-        btn_left = QPushButton()
-        btn_right = QPushButton()
-        btn_reset = QPushButton()
+        self.btn_up = QPushButton()
+        self.btn_back = QPushButton()
+        self.btn_left = QPushButton()
+        self.btn_right = QPushButton()
+        self.btn_reset = QPushButton()
 
-        btn_up.setIcon(QIcon("assets/Up-arrow.png"))
-        btn_back.setIcon(QIcon("assets/Down-arrow.png"))
-        btn_left.setIcon(QIcon("assets/Left-arrow.png"))
-        btn_right.setIcon(QIcon("assets/Right-arrow.png"))
-        btn_reset.setIcon(QIcon("assets/Reset-button.png"))
+        self.btn_up.setIcon(QIcon("assets/Up-arrow.png"))
+        self.btn_back.setIcon(QIcon("assets/Down-arrow.png"))
+        self.btn_left.setIcon(QIcon("assets/Left-arrow.png"))
+        self.btn_right.setIcon(QIcon("assets/Right-arrow.png"))
+        self.btn_reset.setIcon(QIcon("assets/Reset-button.png"))
         
 
-        btn_up.setIconSize(QSize(64,64))
-        btn_back.setIconSize(QSize(64,64))
-        btn_left.setIconSize(QSize(64,64))
-        btn_right.setIconSize(QSize(64,64))
-        btn_reset.setIconSize(QSize(64,64))
+        self.btn_up.setIconSize(QSize(64,64))
+        self.btn_back.setIconSize(QSize(64,64))
+        self.btn_left.setIconSize(QSize(64,64))
+        self.btn_right.setIconSize(QSize(64,64))
+        self.btn_reset.setIconSize(QSize(64,64))
 
-        btn_up.setFixedSize(70,70)
-        btn_back.setFixedSize(70,70)
-        btn_left.setFixedSize(70,70)
-        btn_right.setFixedSize(70,70)
-        btn_reset.setFixedSize(70,70)
+        self.btn_up.setFixedSize(70,70)
+        self.btn_back.setFixedSize(70,70)
+        self.btn_left.setFixedSize(70,70)
+        self.btn_right.setFixedSize(70,70)
+        self.btn_reset.setFixedSize(70,70)
 
-        btn_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_back.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_left.setStyleSheet(config.BTN_MOVEMENT_STYLE) 
-        btn_right.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_reset.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_back.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_left.setStyleSheet(config.BTN_MOVEMENT_STYLE) 
+        self.btn_right.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_reset.setStyleSheet(config.BTN_MOVEMENT_STYLE)
 
-        btn_up.clicked.connect(lambda: self.movement_button_action("U")) 
-        btn_left.clicked.connect(lambda: self.movement_button_action("L")) 
-        btn_right.clicked.connect(lambda: self.movement_button_action("R")) 
-        btn_back.clicked.connect(lambda: self.movement_button_action("B")) 
-        btn_reset.clicked.connect(lambda: self.movement_button_action("RESET"))
+        self.btn_up.clicked.connect(lambda: self.movement_button_action("U")) 
+        self.btn_left.clicked.connect(lambda: self.movement_button_action("L")) 
+        self.btn_right.clicked.connect(lambda: self.movement_button_action("R")) 
+        self.btn_back.clicked.connect(lambda: self.movement_button_action("B")) 
+        self.btn_reset.clicked.connect(lambda: self.movement_button_action("RESET"))
 
         grid_step_layout = QGridLayout()
-        grid_step_layout.addWidget(btn_up, 0, 1)
-        grid_step_layout.addWidget(btn_reset, 1, 1)
-        grid_step_layout.addWidget(btn_left, 1, 0)
-        grid_step_layout.addWidget(btn_right, 1, 2)
-        grid_step_layout.addWidget(btn_back, 2, 1)
+        grid_step_layout.addWidget(self.btn_up, 0, 1)
+        grid_step_layout.addWidget(self.btn_reset, 1, 1)
+        grid_step_layout.addWidget(self.btn_left, 1, 0)
+        grid_step_layout.addWidget(self.btn_right, 1, 2)
+        grid_step_layout.addWidget(self.btn_back, 2, 1)
 
         #Creation of color square and battery widgets
 
@@ -111,82 +111,82 @@ class RobotView(QWidget):
 
         #Creation of arms movement buttons
 
-        btn_left_arm_down = QPushButton()
-        btn_left_arm_up = QPushButton()
-        btn_right_arm_down = QPushButton()
-        btn_right_arm_up = QPushButton()
+        self.btn_left_arm_down = QPushButton()
+        self.btn_left_arm_up = QPushButton()
+        self.btn_right_arm_down = QPushButton()
+        self.btn_right_arm_up = QPushButton()
 
-        btn_left_arm_down.setIcon(QIcon("assets/Marty_LB.png"))
-        btn_left_arm_up.setIcon(QIcon("assets/Marty_LU.png"))
-        btn_right_arm_down.setIcon(QIcon("assets/Marty_RB.png"))
-        btn_right_arm_up.setIcon(QIcon("assets/Marty_RU.png"))
+        self.btn_left_arm_down.setIcon(QIcon("assets/Marty_LB.png"))
+        self.btn_left_arm_up.setIcon(QIcon("assets/Marty_LU.png"))
+        self.btn_right_arm_down.setIcon(QIcon("assets/Marty_RB.png"))
+        self.btn_right_arm_up.setIcon(QIcon("assets/Marty_RU.png"))
 
-        btn_left_arm_down.setIconSize(QSize(80,80))
-        btn_left_arm_up.setIconSize(QSize(80,80))
-        btn_right_arm_down.setIconSize(QSize(80,80))
-        btn_right_arm_up.setIconSize(QSize(80,80))
+        self.btn_left_arm_down.setIconSize(QSize(80,80))
+        self.btn_left_arm_up.setIconSize(QSize(80,80))
+        self.btn_right_arm_down.setIconSize(QSize(80,80))
+        self.btn_right_arm_up.setIconSize(QSize(80,80))
         
-        btn_left_arm_down.setFixedSize(95,95)
-        btn_left_arm_up.setFixedSize(95,95)
-        btn_right_arm_down.setFixedSize(95,95)
-        btn_right_arm_up.setFixedSize(95,95)
+        self.btn_left_arm_down.setFixedSize(95,95)
+        self.btn_left_arm_up.setFixedSize(95,95)
+        self.btn_right_arm_down.setFixedSize(95,95)
+        self.btn_right_arm_up.setFixedSize(95,95)
 
-        btn_left_arm_down.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_left_arm_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_right_arm_down.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_right_arm_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_left_arm_down.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_left_arm_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_right_arm_down.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_right_arm_up.setStyleSheet(config.BTN_MOVEMENT_STYLE)
 
-        btn_left_arm_down.clicked.connect(lambda: self.movement_button_action("ALB"))
-        btn_left_arm_up.clicked.connect(lambda: self.movement_button_action("ALU"))
-        btn_right_arm_down.clicked.connect(lambda: self.movement_button_action("ARB"))
-        btn_right_arm_up.clicked.connect(lambda: self.movement_button_action("ARU"))
+        self.btn_left_arm_down.clicked.connect(lambda: self.movement_button_action("ALB"))
+        self.btn_left_arm_up.clicked.connect(lambda: self.movement_button_action("ALU"))
+        self.btn_right_arm_down.clicked.connect(lambda: self.movement_button_action("ARB"))
+        self.btn_right_arm_up.clicked.connect(lambda: self.movement_button_action("ARU"))
 
         grid_arm_layout= QGridLayout()
     
-        grid_arm_layout.addWidget(btn_left_arm_up, 0,0)
-        grid_arm_layout.addWidget(btn_right_arm_up, 0,1)
-        grid_arm_layout.addWidget(btn_left_arm_down, 1,0)
-        grid_arm_layout.addWidget(btn_right_arm_down, 1,1)
+        grid_arm_layout.addWidget(self.btn_left_arm_up, 0,0)
+        grid_arm_layout.addWidget(self.btn_right_arm_up, 0,1)
+        grid_arm_layout.addWidget(self.btn_left_arm_down, 1,0)
+        grid_arm_layout.addWidget(self.btn_right_arm_down, 1,1)
 
 
         #Creation of emotions buttons
 
-        btn_emotion_sad = QPushButton()
-        btn_emotion_angry = QPushButton()
-        btn_emotion_happy = QPushButton()
-        btn_emotion_excited = QPushButton()
+        self.btn_emotion_sad = QPushButton()
+        self.btn_emotion_angry = QPushButton()
+        self.btn_emotion_happy = QPushButton()
+        self.btn_emotion_excited = QPushButton()
 
-        btn_emotion_sad.setIcon(QIcon("assets/Marty_sad.png"))
-        btn_emotion_angry.setIcon(QIcon("assets/Marty_angry.png"))
-        btn_emotion_happy.setIcon(QIcon("assets/Marty_happy.png"))
-        btn_emotion_excited.setIcon(QIcon("assets/Marty_joyful.png"))
+        self.btn_emotion_sad.setIcon(QIcon("assets/Marty_sad.png"))
+        self.btn_emotion_angry.setIcon(QIcon("assets/Marty_angry.png"))
+        self.btn_emotion_happy.setIcon(QIcon("assets/Marty_happy.png"))
+        self.btn_emotion_excited.setIcon(QIcon("assets/Marty_joyful.png"))
 
-        btn_emotion_sad.setIconSize(QSize(80,80))
-        btn_emotion_angry.setIconSize(QSize(80,80))
-        btn_emotion_happy.setIconSize(QSize(80,80))
-        btn_emotion_excited.setIconSize(QSize(80,80))
+        self.btn_emotion_sad.setIconSize(QSize(80,80))
+        self.btn_emotion_angry.setIconSize(QSize(80,80))
+        self.btn_emotion_happy.setIconSize(QSize(80,80))
+        self.btn_emotion_excited.setIconSize(QSize(80,80))
 
-        btn_emotion_sad.setFixedSize(95,95)
-        btn_emotion_angry.setFixedSize(95,95)
-        btn_emotion_happy.setFixedSize(95,95)
-        btn_emotion_excited.setFixedSize(95,95)
+        self.btn_emotion_sad.setFixedSize(95,95)
+        self.btn_emotion_angry.setFixedSize(95,95)
+        self.btn_emotion_happy.setFixedSize(95,95)
+        self.btn_emotion_excited.setFixedSize(95,95)
 
-        btn_emotion_sad.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_emotion_angry.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_emotion_happy.setStyleSheet(config.BTN_MOVEMENT_STYLE)
-        btn_emotion_excited.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_emotion_sad.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_emotion_angry.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_emotion_happy.setStyleSheet(config.BTN_MOVEMENT_STYLE)
+        self.btn_emotion_excited.setStyleSheet(config.BTN_MOVEMENT_STYLE)
 
-        btn_emotion_sad.clicked.connect(lambda: self.movement_button_action("XSD"))
-        btn_emotion_angry.clicked.connect(lambda: self.movement_button_action("XNG"))
-        btn_emotion_happy.clicked.connect(lambda: self.movement_button_action("XHP"))
-        btn_emotion_excited.clicked.connect(lambda: self.movement_button_action("XDN"))
+        self.btn_emotion_sad.clicked.connect(lambda: self.movement_button_action("XSD"))
+        self.btn_emotion_angry.clicked.connect(lambda: self.movement_button_action("XNG"))
+        self.btn_emotion_happy.clicked.connect(lambda: self.movement_button_action("XHP"))
+        self.btn_emotion_excited.clicked.connect(lambda: self.movement_button_action("XDN"))
 
         emotion_layout = QHBoxLayout()
 
-        emotion_layout.addWidget(btn_emotion_sad)
-        emotion_layout.addWidget(btn_emotion_angry)
-        emotion_layout.addWidget(btn_emotion_happy)
-        emotion_layout.addWidget(btn_emotion_excited)
+        emotion_layout.addWidget(self.btn_emotion_sad)
+        emotion_layout.addWidget(self.btn_emotion_angry)
+        emotion_layout.addWidget(self.btn_emotion_happy)
+        emotion_layout.addWidget(self.btn_emotion_excited)
 
         #Creation of Calibration Page button 
 
@@ -209,6 +209,7 @@ class RobotView(QWidget):
         self.input_ref_ip.setPlaceholderText("Pls enter ref IP")
         self.input_ref_ip.setMinimumWidth(250)
         self.input_ref_ip.setStyleSheet(config.INPUT_REF_IP_STYLE)
+        self.input_ref_ip.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
         self.ref_connexion_button.setStyleSheet(config.BTN_REF_DISCONNECTED_STYLE)
 
@@ -248,7 +249,12 @@ class RobotView(QWidget):
         self.start_battle_btn.setEnabled(False)
         self.start_battle_btn.clicked.connect(self.start_game_action)
 
-
+        #securisation button for keyboard
+        self.btn_refresh_status.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.calibrate_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.choose_file_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.start_battle_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.ref_connexion_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
        
 
         
@@ -334,6 +340,8 @@ class RobotView(QWidget):
         main_layout.addStretch(1) 
         
         self.setLayout(main_layout)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.setFocus()
 
 
 
@@ -367,11 +375,17 @@ class RobotView(QWidget):
 
 
     def movement_button_action(self, action_code):
+        self.set_manual_controls_enabled(False)
         self.movement_worker = MovementWorker(self.marty, action_code=action_code)
+        self.movement_worker.finished.connect(self.on_movement_finished)
         self.movement_worker.start()
+
+    def on_movement_finished(self):
+        self.set_manual_controls_enabled(True)
 
     def ref_connexion_button_action(self):
         if not self.main_window.ref_connected:
+            self.input_ref_ip.clearFocus()
             ip_entered = self.input_ref_ip.text()
             
             self.main_window.client = robot_client.RobotClient(host=ip_entered)
@@ -384,6 +398,7 @@ class RobotView(QWidget):
             self.connexion_ref_worker.start()
 
         else:
+            self.input_ref_ip.clearFocus()
             self.ref_connexion_button.setText("Disconnecting...")
             self.ref_connexion_button.setStyleSheet(config.BTN_REF_WAITING_STYLE)
             self.ref_connexion_button.setEnabled(False)
@@ -465,7 +480,10 @@ class RobotView(QWidget):
         self.manager.moves = reader.getMovement()
         self.manager.acts = reader.getAct()
 
+        self.set_manual_controls_enabled(False)
         self.start_battle_btn.setEnabled(False)
+        self.choose_file_btn.setEnabled(False)
+        self.ref_connexion_button.setEnabled(False)
         self.start_battle_btn.setText("Battle en cours...")
 
         self.game_worker = GameWorker(self.manager)
@@ -474,6 +492,9 @@ class RobotView(QWidget):
 
     def battle_end_action(self):
         self.start_battle_btn.setEnabled(True)
+        self.set_manual_controls_enabled(True)
+        self.choose_file_btn.setEnabled(True)
+        self.ref_connexion_button.setEnabled(True)
         self.start_battle_btn.setText("Start Battle")
 
     def create_battery_icon(self, percentage):
@@ -518,3 +539,45 @@ class RobotView(QWidget):
 
         painter.end()
         return pixmap
+    
+    def keyPressEvent(self, event):
+
+        if self.input_ref_ip.hasFocus():
+            super().keyPressEvent(event)
+            return
+
+        key = event.key()
+
+        if key == Qt.Key.Key_Up or key == Qt.Key.Key_Z:
+            self.btn_up.animateClick() 
+        elif key == Qt.Key.Key_Down or key == Qt.Key.Key_S:
+            self.btn_back.animateClick()
+        elif key == Qt.Key.Key_Left or key == Qt.Key.Key_Q:
+            self.btn_left.animateClick()
+        elif key == Qt.Key.Key_Right or key == Qt.Key.Key_D:
+            self.btn_right.animateClick()
+        elif key == Qt.Key.Key_Space:
+            self.btn_reset.animateClick()
+        else:
+            super().keyPressEvent(event)
+
+    def set_manual_controls_enabled(self, enabled):
+
+        self.btn_up.setEnabled(enabled)
+        self.btn_back.setEnabled(enabled)
+        self.btn_left.setEnabled(enabled)
+        self.btn_right.setEnabled(enabled)
+        self.btn_reset.setEnabled(enabled)
+
+        self.btn_left_arm_up.setEnabled(enabled)
+        self.btn_left_arm_down.setEnabled(enabled)
+        self.btn_right_arm_up.setEnabled(enabled)
+        self.btn_right_arm_down.setEnabled(enabled)
+
+        self.btn_emotion_sad.setEnabled(enabled)
+        self.btn_emotion_angry.setEnabled(enabled)
+        self.btn_emotion_happy.setEnabled(enabled)
+        self.btn_emotion_excited.setEnabled(enabled)
+
+        self.btn_refresh_status.setEnabled(enabled)
+        self.calibrate_btn.setEnabled(enabled)
