@@ -8,17 +8,8 @@ class GameManager:
         self.reader = dance_reader
         self.moves = []
         self.acts = {}
-        self.color_traduction = config.COLOR_TRADUCTION.copy()
-    def prepare_game(self, ip_adress):
-        self.robot.connect(ip_adress)
-        self.moves = self.reader.getMovement()
-        self.acts = self.reader.getAct()
-        #self.robot.calibrate_color()
-        if(self.robot.is_connected and self.client.connect()):
-            return True
-        else:
-            return False
-        
+        self.color_traduction = config.COLOR_TRANSLATION.copy()
+
     def play_game(self):
         try:
             max_moves = self.client.start()
@@ -78,8 +69,3 @@ class GameManager:
         except Exception as ref_error:
             print("Connexion lost with ref")
 
-    def end_game(self):
-        self.client.disconnect()
-        self.robot.disconnect()
-        
-        

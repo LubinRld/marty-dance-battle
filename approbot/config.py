@@ -14,7 +14,7 @@ DEFAULT_COLOR_REFERENCES = {
     "Red" : (105,17,21)
     }
 
-COLOR_TRADUCTION = {
+COLOR_TRANSLATION = {
     "Black": "N",
     "Purple": "P",
     "Dark Blue": "B",
@@ -22,6 +22,17 @@ COLOR_TRADUCTION = {
     "Cyan": "C",
     "Green": "G",
     "Red": "R"
+}
+
+REAL_COLOR_RGB = {
+
+    "Black" : "#000000",
+    "Purple" : "#FF29F1",
+    "Dark Blue" : "#0000F0",
+    "Yellow": "#FFFF24",
+    "Cyan" : "#1AF8FF",
+    "Green" : "#1BF000",
+    "Red" : "#FF291A"
 }
 
 BTN_SECONDARY_STYLE = """
@@ -88,44 +99,17 @@ BTN_REF_CONNECTED_STYLE = """
     }
 """
 
-BTN_REF_WAITING_STYLE = "padding: 10px; background-color: #F39C12; color: white; font-weight: bold; border-radius: 6px;"
-
-REAL_COLOR_RGB = {
-
-    "Black" : "#000000",
-    "Purple" : "#FF29F1",
-    "Dark Blue" : "#0000F0",
-    "Yellow": "#FFFF24",
-    "Cyan" : "#1AF8FF",
-    "Green" : "#1BF000",
-    "Red" : "#FF291A"
-}
-
-INPUT_MARTY_IP_STYLE = """
-    QLineEdit {
-        padding: 8px;
-        font-size: 14px;
-        border: 2px solid #3498DB;
-        border-radius: 6px;
-        color: #000000;
-        background-color: #45c2e8;
-    }
-    QLineEdit:focus {
-        border: 2px solid #2980B9;
-    }
-"""
-
-BTN_CONNEXION_STYLE = """
+BTN_REF_WAITING_STYLE = """
     QPushButton {
-        padding: 8px;
-        background-color: #45c2e8;
-        color: black;
-        border: 2px solid #3498DB;
-        border-radius: 15px;
+        background-color: #F39C12; 
+        color: white; 
+        font-weight: bold; 
+        border-radius: 6px;
+        padding: 10px; 
+        border: none;
     }
     QPushButton:hover {
-        background-color: #3498DB;
-        color: white;
+        background-color: #D68910;
     }
 """
 
@@ -141,6 +125,22 @@ BTN_MOVEMENT_STYLE = """
     }
 """
 
+INPUT_MARTY_IP_STYLE = """
+    QLineEdit {
+        padding: 8px;
+        font-size: 14px;
+        border: 2px solid #3498DB;
+        border-radius: 6px;
+        color: #000000;
+        background-color: #45c2e8;
+    }
+    QLineEdit:focus {
+        border: 2px solid #2980B9;
+    }
+"""
+
+
+
 INPUT_REF_IP_STYLE = """
     QLineEdit {
         color: black;
@@ -154,7 +154,6 @@ INPUT_REF_IP_STYLE = """
         border: 2px solid #C0392B;
     }
 """
-CARD_STYLE = "background: transparent; border: none;"
 
 INPUT_STYLE = """
     QLineEdit, QComboBox {
@@ -179,3 +178,4 @@ INPUT_STYLE = """
     }
 """
 
+CARD_STYLE = "background: transparent; border: none;"
