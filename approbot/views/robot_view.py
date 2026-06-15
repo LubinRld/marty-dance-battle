@@ -17,10 +17,7 @@ class RobotView(QWidget):
         super().__init__()
         self.main_window = main_window
         self.marty = main_window.marty
-        
-        self.color_list = ["Black", "Purple", "Dark Blue", "Yellow", "Cyan", "Green", "Red"]
-        self.index_color = 0
-        self.calibration_started = False
+    
         self.file_path_danse = None
 
         #Creation of titles

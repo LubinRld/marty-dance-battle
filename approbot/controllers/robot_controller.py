@@ -188,10 +188,4 @@ class RobotController:
         self.robot.move_joint("right knee",-20, move_time=1000, blocking=False)
         self._move_arm("left", -100)
         self._move_arm("right",-100, blocking=True)
-        """"
-        self.robot.move_joint("left knee",0, move_time=1000)
-        self.robot.move_joint("right knee", 0, move_time=1000)
-        self._move_arm("left",0)
-        self._move_arm("right",0, blocking=True)
-        """
         self._reset_position()
