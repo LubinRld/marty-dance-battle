@@ -1,4 +1,4 @@
-from main import run
+from main import run, stop
 
 from PyQt6.QtWidgets import (
     QApplication,
@@ -14,24 +14,26 @@ from PyQt6.QtWidgets import (
 )
 
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
 
 BACKG_COLOR = "#98d7d6"
 FRAME_COLOR = "#fed55a"
 
+class ServerThread(QThread):
+    def run(self):
+        run()
+    
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
+        self.server_thread = None
         self.setWindowTitle("Serveur Robot")
         self.resize(1200, 700)
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        central_widget.setStyleSheet(
-            f"background-color: {BACKG_COLOR};"
-        )
+        central_widget.setStyleSheet(f"background-color: {BACKG_COLOR};")
 
         grid = QGridLayout()
         central_widget.setLayout(grid)
@@ -41,22 +43,11 @@ class MainWindow(QMainWindow):
         if pixmap.isNull():
             self.logo.setText("Logo introuvable")
         else:
-            pixmap = pixmap.scaled(
-                180,
-                180,
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation
-            )
+            pixmap = pixmap.scaled(180,180,Qt.AspectRatioMode.KeepAspectRatio,Qt.TransformationMode.SmoothTransformation)
             self.logo.setPixmap(pixmap)
 
-        self.logo.setAlignment(
-            Qt.AlignmentFlag.AlignLeft
-        )
-
-        self.robot_count = QLabel(
-            "Robots enregistrés : 12"
-        )
-
+        self.logo.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.robot_count = QLabel("Robots enregistrés : 12")
         self.robot_count.setStyleSheet("""
             font-size: 18px;
             font-weight: bold;
@@ -85,26 +76,18 @@ class MainWindow(QMainWindow):
         """)
 
         robot_layout = QVBoxLayout()
-        robot_title = QLabel(
-            "Robots disponibles"
-        )
+        robot_title = QLabel("Robots disponibles")
 
-        robot_title.setAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
+        robot_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         robot_layout.addWidget(robot_title)
         robot_layout.addWidget(self.robot_selector)
         robot_frame.setLayout(robot_layout)
         self.server_running = False
 
-        self.server_button = QPushButton(
-            "Démarrer le serveur"
-        )
+        self.server_button = QPushButton("Démarrer le serveur")
 
-        self.server_button.clicked.connect(
-            self.toggle_server
-        )
+        self.server_button.clicked.connect(self.toggle_server)
 
         self.server_button.setStyleSheet(f"""
             QPushButton {{
@@ -120,9 +103,7 @@ class MainWindow(QMainWindow):
             }}
         """)
 
-        self.server_ip = QLabel(
-            "IP : 192.168.1.42"
-        )
+        self.server_ip = QLabel("IP : 192.168.1.42")
 
         self.server_ip.setStyleSheet("""
             font-size: 16px;
@@ -139,22 +120,10 @@ class MainWindow(QMainWindow):
         """)
 
         fight_layout = QVBoxLayout()
-        fight_title = QLabel(
-            "Combat en cours"
-        )
-
-        fight_title.setAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
-
-        self.fight_label = QLabel(
-            "Marty  VS  Atlas"
-        )
-
-        self.fight_label.setAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
-
+        fight_title = QLabel("Combat en cours")
+        fight_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.fight_label = QLabel("Marty  VS  Atlas")
+        self.fight_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.fight_label.setStyleSheet("""
             font-size: 24px;
             font-weight: bold;
@@ -162,15 +131,13 @@ class MainWindow(QMainWindow):
 
         fight_layout.addWidget(fight_title)
         fight_layout.addWidget(self.fight_label)
-
         fight_frame.setLayout(fight_layout)
-
         logs_frame = QFrame()
-        logs_frame.setStyleSheet("""
-            QFrame {
+        logs_frame.setStyleSheet(f"""
+            QFrame {{
                 background-color: {FRAME_COLOR};
                 border-radius: 10px;
-            }
+            }}
         """)
 
         logs_layout = QVBoxLayout()
@@ -182,13 +149,10 @@ class MainWindow(QMainWindow):
             border: none;
         """)
 
-        self.logs.append(
-            "[INFO] Interface démarrée"
-        )
+        self.logs.append("[INFO] Interface démarrée")
 
         logs_layout.addWidget(logs_title)
         logs_layout.addWidget(self.logs)
-
         logs_frame.setLayout(logs_layout)
 
         grid.addWidget(self.logo, 0, 0)
@@ -220,28 +184,18 @@ class MainWindow(QMainWindow):
         grid.setRowStretch(3, 2)
 
     def toggle_server(self):
-
-        self.server_running = (
-            not self.server_running
-        )
-
+        self.server_running = (not self.server_running)
         if self.server_running:
+            self.server_button.setText("Arrêter le serveur")
+            self.logs.append("[INFO] Serveur démarré")
+            self.server_thread = ServerThread()
+            self.server_thread.start()
 
-            self.server_button.setText(
-                "Arrêter le serveur"
-            )
-
-            self.logs.append(
-                "[INFO] Serveur démarré"
-            )
         else:
-
-            self.server_button.setText(
-                "Démarrer le serveur"
-            )
-            self.logs.append(
-                "[INFO] Serveur arrêté"
-            )
+            self.server_button.setText("Démarrer le serveur")
+            stop()
+            self.server_thread.wait()
+            self.logs.append("[INFO] Serveur arrêté")
             
 
 

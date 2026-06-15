@@ -3,7 +3,11 @@ import server
 HOST = "0.0.0.0"
 PORT = 8000
 
+myserver = None
+
 def run():
+
+    global myserver
 
     myserver = server.HTTPServer((HOST, PORT),server.RequestHandler)
     print(f"Server running on {HOST}:{PORT}")
@@ -11,5 +15,9 @@ def run():
     myserver.serve_forever()
 
 
-if __name__ == "__main__":
-    run()
+def stop():
+    global myserver
+    if myserver:
+        myserver.shutdown()
+        myserver.server_close()
+        myserver = None
