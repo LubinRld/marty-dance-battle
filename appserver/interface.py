@@ -21,7 +21,9 @@ BACKG_COLOR = "#98d7d6"
 FRAME_COLOR = "#fed55a"
 
 class ServerThread(QThread):
+    log_signal = pyqtSignal(str)
     def run(self):
+        self.log_signal.emit("Server running")
         run()
     
 
@@ -41,13 +43,13 @@ class MainWindow(QMainWindow):
         self.logo = QLabel()
         pixmap = QPixmap("./appserver/martygrise.png")
         if pixmap.isNull():
-            self.logo.setText("Logo introuvable")
+            self.logo.setText("Logo not found")
         else:
             pixmap = pixmap.scaled(180,180,Qt.AspectRatioMode.KeepAspectRatio,Qt.TransformationMode.SmoothTransformation)
             self.logo.setPixmap(pixmap)
 
         self.logo.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.robot_count = QLabel("Robots enregistrés : 12")
+        self.robot_count = QLabel("Registered robots : 12")
         self.robot_count.setStyleSheet("""
             font-size: 18px;
             font-weight: bold;
@@ -76,7 +78,7 @@ class MainWindow(QMainWindow):
         """)
 
         robot_layout = QVBoxLayout()
-        robot_title = QLabel("Robots disponibles")
+        robot_title = QLabel("Robots available")
 
         robot_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -85,7 +87,7 @@ class MainWindow(QMainWindow):
         robot_frame.setLayout(robot_layout)
         self.server_running = False
 
-        self.server_button = QPushButton("Démarrer le serveur")
+        self.server_button = QPushButton("Start the server")
 
         self.server_button.clicked.connect(self.toggle_server)
 
@@ -120,7 +122,7 @@ class MainWindow(QMainWindow):
         """)
 
         fight_layout = QVBoxLayout()
-        fight_title = QLabel("Combat en cours")
+        fight_title = QLabel("Ongoing Fight")
         fight_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.fight_label = QLabel("Marty  VS  Atlas")
         self.fight_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -149,7 +151,7 @@ class MainWindow(QMainWindow):
             border: none;
         """)
 
-        self.logs.append("[INFO] Interface démarrée")
+        self.logs.append("[INFO] Interface started")
 
         logs_layout.addWidget(logs_title)
         logs_layout.addWidget(self.logs)
@@ -182,20 +184,23 @@ class MainWindow(QMainWindow):
 
         grid.setRowStretch(2, 1)
         grid.setRowStretch(3, 2)
+    def add_log(self, message):
+        self.logs.append(message)
 
     def toggle_server(self):
         self.server_running = (not self.server_running)
         if self.server_running:
-            self.server_button.setText("Arrêter le serveur")
-            self.logs.append("[INFO] Serveur démarré")
+            self.server_button.setText("Stop the server")
+            self.logs.append("[INFO] Server running")
             self.server_thread = ServerThread()
+            self.server_thread.log_signal.connect(self.add_log)
             self.server_thread.start()
 
         else:
-            self.server_button.setText("Démarrer le serveur")
+            self.server_button.setText("Start the server")
             stop()
             self.server_thread.wait()
-            self.logs.append("[INFO] Serveur arrêté")
+            self.logs.append("[INFO] Server stopped")
             
 
 

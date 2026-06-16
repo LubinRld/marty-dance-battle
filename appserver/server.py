@@ -1,7 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import uuid
-import random
 from urllib.parse import urlparse, parse_qs
 from battle import Battle
 
@@ -11,9 +10,15 @@ MAX_MOVES = 10
 
 battle = Battle()
 battle.load_file("appserver/example.battle")
-
+log_callback = None
 robots = {}
 scores = {}
+
+def add_log(message):
+    print(message)
+
+    if log_callback:
+        log_callback(message)
 
 class RequestHandler(BaseHTTPRequestHandler):
 
@@ -41,14 +46,14 @@ class RequestHandler(BaseHTTPRequestHandler):
             params = parse_qs(parsed.query)
             rid = params.get("rid", [None])[0]
             if rid not in scores:
-                self.send_json({"error": "robot inconnu"},404)
+                self.send_json({"error": "unknown robot"},404)
                 return
 
             self.send_json(scores[rid])
 
         else:
 
-            self.send_json({"error": "route inconnue"},404)
+            self.send_json({"error": "unknown way"},404)
 
 
     def do_POST(self):
@@ -57,18 +62,18 @@ class RequestHandler(BaseHTTPRequestHandler):
             rid = str(uuid.uuid4())[:6].upper()
             robots[rid] = {"connected": True}
             scores[rid] = 0
-            print(f"[HELLO] {rid}")
+            add_log(f"[HELLO] {rid}")
             self.send_json(rid)
 
         elif self.path == "/start":
             data = self.read_json()
             rid = data.get("rid")
             if rid not in robots:
-                self.send_json({"error": "robot inconnu"},404)
+                self.send_json({"error": "unknown robot"},404)
                 return
 
             moves = battle.max_moves
-            print(f"[START] {rid} -> {moves}")
+            add_log(f"[START] {rid} -> {moves}")
             self.send_json(moves)
 
         elif self.path == "/step":
@@ -79,12 +84,12 @@ class RequestHandler(BaseHTTPRequestHandler):
             exp = data.get("exp")
 
             if rid not in robots:
-                self.send_json({"error": "robot inconnu"},404)
+                self.send_json({"error": "unknown robot"},404)
                 return
 
             points = battle.compute_points(col,arm,exp)
             scores[rid] += points
-            print(
+            add_log(
                 f"[STEP] {rid} "
                 f"col={col} "
                 f"arm={arm} "
@@ -100,9 +105,11 @@ class RequestHandler(BaseHTTPRequestHandler):
             if rid in robots:
                 robots[rid]["connected"] = False
 
-            print(f"[BYE] {rid}")
+            add_log(f"[BYE] {rid}")
             self.send_json({"status": "ok"})
 
         else:
-            self.send_json({"error": "route inconnue"},404)
+            self.send_json({"error": "unknown route"},404)
+    
+        
 

@@ -10,7 +10,7 @@ def run():
     global myserver
 
     myserver = server.HTTPServer((HOST, PORT),server.RequestHandler)
-    print(f"Server running on {HOST}:{PORT}")
+    server.add_log(f"Server running on {HOST}:{PORT}")
     server.battle.print_rules()
     myserver.serve_forever()
 
