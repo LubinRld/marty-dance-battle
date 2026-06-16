@@ -1,5 +1,4 @@
-from main import run, stop
-
+import server
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -16,15 +15,26 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
+HOST = "0.0.0.0"
+PORT = 8000
 
 BACKG_COLOR = "#98d7d6"
 FRAME_COLOR = "#fed55a"
 
 class ServerThread(QThread):
     log_signal = pyqtSignal(str)
+
     def run(self):
-        self.log_signal.emit("Server running")
-        run()
+        server.log_callback = self.log_signal.emit
+        self.myserver = server.ThreadedHTTPServer((HOST, PORT), server.RequestHandler)
+        server.add_log(f"Server running on {HOST}:{PORT}")
+        server.battle.print_rules()
+        self.myserver.serve_forever()
+
+    def stop_server(self):
+        if hasattr(self, "myserver") and self.myserver:
+            self.myserver.shutdown()
+            self.myserver.server_close()
     
 
 class MainWindow(QMainWindow):
@@ -184,29 +194,24 @@ class MainWindow(QMainWindow):
 
         grid.setRowStretch(2, 1)
         grid.setRowStretch(3, 2)
+
     def add_log(self, message):
         self.logs.append(message)
 
     def toggle_server(self):
-        self.server_running = (not self.server_running)
-        if self.server_running:
-            self.server_button.setText("Stop the server")
-            self.logs.append("[INFO] Server running")
-            self.server_thread = ServerThread()
-            self.server_thread.log_signal.connect(self.add_log)
-            self.server_thread.start()
-
-        else:
-            self.server_button.setText("Start the server")
-            stop()
-            self.server_thread.wait()
-            self.logs.append("[INFO] Server stopped")
+            self.server_running = not self.server_running
+            if self.server_running:
+                self.server_button.setText("Stop the server")
+                self.server_thread = ServerThread()
+                self.server_thread.log_signal.connect(self.add_log)
+                self.server_thread.start()
+            else:
+                self.server_button.setText("Start the server")
+                if self.server_thread:
+                    self.server_thread.stop_server()
+                    self.server_thread.wait()
+                self.logs.append("[INFO] Server stopped")
             
-
-
 app = QApplication([])
-
 window = MainWindow()
-window.show()
 
-app.exec()
