@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
-HOST = "0.0.0.0"
+HOST = "192.168.0.116"
 PORT = 8000
 
 BACKG_COLOR = "#98d7d6"
@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
         central_widget.setLayout(grid)
         
         self.logo = QLabel()
-        pixmap = QPixmap("./appserver/martygrise.png")
+        pixmap = QPixmap("./assets/Logo.png")
         if pixmap.isNull():
             self.logo.setText("Logo not found")
         else:
@@ -103,7 +103,7 @@ class MainWindow(QMainWindow):
 
         self.server_button.setStyleSheet(f"""
             QPushButton {{
-                background-color: {FRAME_COLOR};
+                background-color: #1a9331;
                 border-radius: 10px;
                 padding: 10px;
                 font-size: 16px;
@@ -111,11 +111,11 @@ class MainWindow(QMainWindow):
             }}
 
             QPushButton:hover {{
-                background-color: #ffd96f;
+                background-color: #147426;
             }}
         """)
 
-        self.server_ip = QLabel("IP : 192.168.1.42")
+        self.server_ip = QLabel(f"IP: {HOST}")
 
         self.server_ip.setStyleSheet("""
             font-size: 16px;
@@ -202,11 +202,37 @@ class MainWindow(QMainWindow):
             self.server_running = not self.server_running
             if self.server_running:
                 self.server_button.setText("Stop the server")
+                self.server_button.setStyleSheet(f"""
+                    QPushButton {{
+                        background-color: #e21537;
+                        border-radius: 10px;
+                        padding: 10px;
+                        font-size: 16px;
+                        font-weight: bold;
+                    }}
+
+                    QPushButton:hover {{
+                        background-color: #c31330;
+                    }}
+                """)
                 self.server_thread = ServerThread()
                 self.server_thread.log_signal.connect(self.add_log)
                 self.server_thread.start()
             else:
                 self.server_button.setText("Start the server")
+                self.server_button.setStyleSheet(f"""
+                    QPushButton {{
+                        background-color: #1a9331;
+                        border-radius: 10px;
+                        padding: 10px;
+                        font-size: 16px;
+                        font-weight: bold;
+                    }}
+
+                    QPushButton:hover {{
+                        background-color: #147426;
+                    }}
+                """)
                 if self.server_thread:
                     self.server_thread.stop_server()
                     self.server_thread.wait()
