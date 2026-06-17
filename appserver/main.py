@@ -1,4 +1,4 @@
-import server 
+from interface import app, window
 
 HOST = "0.0.0.0"
 PORT = 8080

@@ -3,6 +3,7 @@ import json
 import uuid
 from urllib.parse import urlparse, parse_qs
 from battle import Battle
+from socketserver import ThreadingMixIn
 
 
 SERVER_VERSION = "1.2"
@@ -19,6 +20,8 @@ def add_log(message):
 
     if log_callback:
         log_callback(message)
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    daemon_threads = True
 
 class RequestHandler(BaseHTTPRequestHandler):
 
