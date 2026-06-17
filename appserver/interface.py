@@ -1,4 +1,5 @@
 import server
+from getip import get_local_ip
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -15,8 +16,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
-HOST = "192.168.0.116"
-PORT = 8000
+HOST = get_local_ip()
+PORT = 8080
 
 BACKG_COLOR = "#98d7d6"
 FRAME_COLOR = "#fed55a"
