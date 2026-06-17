@@ -36,7 +36,7 @@ class CalibrationView(QWidget):
         card_layout.addWidget(dropdown_label)
 
         self.color_dropdown = QComboBox()
-        self.color_dropdown.addItems(["Black", "Purple", "Dark Blue", "Yellow", "Cyan", "Green", "Red"])
+        self.color_dropdown.addItems(config.COLOR_TRANSLATION.keys())
         self.color_dropdown.setStyleSheet(config.INPUT_STYLE)
         card_layout.addWidget(self.color_dropdown)
 

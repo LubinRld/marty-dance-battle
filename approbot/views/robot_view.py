@@ -367,10 +367,6 @@ class RobotView(QWidget):
             self.color_indicator_square.setStyleSheet("background-color: #BDC3C7; border: 1px solid #7F8C8D; border-radius: 10px;border-color: red")
             self.color_name_label.setText("Error")
 
-
-
-
-
     def movement_button_action(self, action_code):
         self.set_manual_controls_enabled(False)
         self.movement_worker = MovementWorker(self.marty, action_code=action_code)
@@ -473,10 +469,6 @@ class RobotView(QWidget):
         
         reader = ReadDance(self.file_path_danse)
         self.manager = GameManager(self.marty, self.main_window.client, reader)
-
-        self.manager.moves = reader.getMovement()
-        self.manager.acts = reader.getAct()
-
         self.set_manual_controls_enabled(False)
         self.start_battle_btn.setEnabled(False)
         self.choose_file_btn.setEnabled(False)
@@ -495,32 +487,26 @@ class RobotView(QWidget):
         self.start_battle_btn.setText("Start Battle")
 
     def create_battery_icon(self, percentage):
-        # 💡 NOUVELLES DIMENSIONS COMPACTES : Largeur 56px, Hauteur 28px
         pixmap = QPixmap(56, 28)
         pixmap.fill(Qt.GlobalColor.transparent)
         
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # Définition de la couleur selon le pourcentage
         if percentage > 50:
-            fill_color = QColor("#2ECC71") # Vert
+            fill_color = QColor("#2ECC71") 
         elif percentage > 20:
-            fill_color = QColor("#F39C12") # Orange
+            fill_color = QColor("#F39C12") 
         else:
-            fill_color = QColor("#E74C3C") # Rouge
+            fill_color = QColor("#E74C3C") 
 
-        # Dessin du contour extérieur de la pile (Gris sombre)
         painter.setPen(QColor("#34495E"))
         painter.setBrush(QColor("#BDC3C7"))
-        # Ajustement du rectangle principal pour la taille réduite
         painter.drawRoundedRect(3, 3, 44, 22, 4, 4)
 
-        # Dessin de la petite borne positive à droite
         painter.setBrush(QColor("#34495E"))
         painter.drawRoundedRect(47, 9, 4, 10, 1, 1)
 
-        # Dessin de la jauge interne de couleur
         if percentage > 0:
             max_width = 38
             current_width = int((percentage / 100.0) * max_width)
@@ -528,7 +514,6 @@ class RobotView(QWidget):
             painter.setBrush(fill_color)
             painter.drawRoundedRect(6, 6, current_width, 16, 2, 2)
 
-        # Écriture du texte du pourcentage par-dessus (police réduite à 8pt)
         painter.setPen(QColor("#FFFFFF" if percentage > 35 else "#34495E"))
         font = QFont("Arial", 8, QFont.Weight.Bold)
         painter.setFont(font)

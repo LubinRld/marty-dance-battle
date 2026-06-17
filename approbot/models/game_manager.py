@@ -6,8 +6,8 @@ class GameManager:
         self.robot = robot_controller
         self.client=  robot_client
         self.reader = dance_reader
-        self.moves = []
-        self.acts = {}
+        self.moves = self.reader.getMovement()
+        self.acts = self.reader.getAct()
         self.color_traduction = config.COLOR_TRANSLATION.copy()
 
     def play_game(self):
@@ -15,6 +15,7 @@ class GameManager:
             max_moves = self.client.start()
         except Exception as ref_error:
             print("Connexion lost with ref")
+            return
         given_moves = len(self.moves)
         for i in range(max_moves):
             index_move = i%given_moves
@@ -26,26 +27,21 @@ class GameManager:
                 arm_action = []
                 exp_action = "None"
                 color = self.robot.get_actual_color_name()
-                color_translated = self.color_traduction.get(color, color)
+                color_translated = self.color_traduction.get(color, color)#si il connait pas color, il renvoie par défaut color
                 if color_translated in self.acts:
-                    arms_to_do = []
-                    exp_to_do = None
-
                     for act in self.acts[color_translated]:
                         if "AL" in act or "AR" in act:
                             arm_action.append(act)
-                            arms_to_do.append(act)
                         elif "X" in act:
                             exp_action=act
-                            exp_to_do = act
-                    for act in arms_to_do:
+                    for act in arm_action:
                         self.robot.execute_action(act)
 
-                    if len(arms_to_do)>0:
+                    if len(arm_action)>0:
                         time.sleep(1.2)
                         self.robot._reset_position()
-                    if exp_to_do is not None:
-                        self.robot.execute_action(exp_to_do)
+                    if exp_action != "None":
+                        self.robot.execute_action(exp_action)
             except Exception as robot_error:
                 print("Connexion lost with Marty")
                 break

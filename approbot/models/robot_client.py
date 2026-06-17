@@ -1,7 +1,7 @@
 import requests
 
 class RobotClient:
-    def __init__(self, host="localhost", port=8000):
+    def __init__(self, host="localhost", port=8080):
         self.url = f"http://{host}:{port}"
         self.rid = None
     
@@ -47,7 +47,7 @@ class RobotClient:
                 return False
         except Exception as e:
             print (f"Can't connect to the server : {e}")
-            return False    
+            return True    
 
     def start(self):
         url_start = f"{self.url}/start"
@@ -59,7 +59,7 @@ class RobotClient:
             else:
                 return None
         except Exception as e:
-            print (f"can't connect to the server : {e}")
+            raise Exception("ref disconnected")
 
     def get_score(self):
         url_score = f"{self.url}/score"
@@ -71,7 +71,7 @@ class RobotClient:
             else:
                 print(f"didn't work : {response.json()}")
         except Exception as e:
-            print (f"Can't connect to the server : {e}")
+            raise Exception("ref disconnected")
 
     def step(self, col, arm, exp):
         url_step = f"{self.url}/step"
@@ -86,5 +86,5 @@ class RobotClient:
             else:
                 print(f"didn't work: {request.json()}")
         except Exception as e:
-            print(f"Error : {e}")
+            raise Exception("ref disconnected")
 

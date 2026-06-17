@@ -6,12 +6,12 @@ WINDOW_ICON_PATH = "assets/Logo.png"
 
 DEFAULT_COLOR_REFERENCES = {
     "Black" : (25,12,11), 
-    "Purple" : (122,26,40),
+    "Purple" : (157,33,53),
     "Dark Blue" : (33,22,30),
     "Yellow" : (271,110,78),
     "Cyan" : (71,75,100),
     "Green" : (47,43,40),
-    "Red" : (105,17,21)
+    "Red" : (136,22,30)
     }
 
 COLOR_TRANSLATION = {
