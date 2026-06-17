@@ -18,7 +18,7 @@ class RobotController:
                 return True
             self.robot=Marty("wifi", ip_address)
         
-            battery = self.robot.get_battery_remaining() #pour être sur qu'il est bien connecté.
+            battery = self.robot.get_battery_remaining() #pour être sur qu'il soit bien connecté.
             if battery is None or battery==0:
                 raise Exception("The robot didn't respond")
             self.is_connected=True
@@ -96,6 +96,7 @@ class RobotController:
             green_mean=sum(green_measures)//measure_number
             blue_mean=sum(blue_measures)//measure_number
             self.color_references[color]=(red_mean, green_mean, blue_mean)
+            print(self.color_references[color])
             return True
         return False
 
@@ -130,7 +131,7 @@ class RobotController:
             self.robot.eyes("normal", blocking=False)
         elif actionCode == "XSD":
             self._reset_position()
-            self.robot.eyes(30) #value to test
+            self.robot.eyes(30) 
             self.robot.disco_color("blue")
         elif actionCode == "XHP":
             self.robot.disco_color("green")
